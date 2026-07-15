@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Presenting with Dais</title>
+  <link rel="stylesheet" href="../dais.css">
+  <script src="../dais.js" defer></script>
+</head>
+<body>
+
+  <nav class="dais-controls" aria-label="Presentation controls">
+    <label><input type="checkbox" class="dais-overview-toggle"> Overview</label>
+    <label><input type="checkbox" class="dais-notes-toggle"> Notes</label>
+    <output class="dais-counter"></output>
+  </nav>
+
+  <div class="dais-progress" aria-hidden="true"></div>
+
+  <main class="dais" aria-label="Presenting with Dais" tabindex="0">
+
+    <section class="slide title" id="intro">
+      <h1>Presenting with Dais</h1>
+      <p>A web-native slide framework · HTML &amp; CSS first</p>
+      <aside class="notes">
+        Welcome! Toggle "Notes" in the top-right corner (or press S) to see
+        speaker notes like this one on every slide.
+      </aside>
+    </section>
+
+    <section class="slide" id="what">
+      <h2>What is Dais?</h2>
+      <ul>
+        <li>One stylesheet, <strong>no build step</strong>, no required JavaScript</li>
+        <li>Slides are real <code>&lt;section&gt;</code> elements with real headings</li>
+        <li>Navigate by swipe, scroll, keyboard, dots, or arrows</li>
+        <li>Remove the CSS and the deck still reads as a document</li>
+      </ul>
+      <aside class="notes">
+        The core claim: everything on screen works with JavaScript disabled.
+        dais.js only adds conveniences.
+      </aside>
+    </section>
+
+    <section class="slide" id="markup">
+      <h2>The whole authoring contract</h2>
+      <pre><code>&lt;main class="dais" aria-label="Talk title" tabindex="0"&gt;
+
+  &lt;section class="slide title" id="intro"&gt;
+    &lt;h1&gt;Talk title&lt;/h1&gt;
+  &lt;/section&gt;
+
+  &lt;section class="slide" id="one-idea"&gt;
+    &lt;h2&gt;Every slide gets a heading&lt;/h2&gt;
+    &lt;p&gt;…and any HTML you like.&lt;/p&gt;
+    &lt;aside class="notes"&gt;Only you see this.&lt;/aside&gt;
+  &lt;/section&gt;
+
+&lt;/main&gt;</code></pre>
+      <aside class="notes">
+        That's genuinely all of it. Everything else is optional classes.
+      </aside>
+    </section>
+
+    <section class="slide" id="navigation">
+      <h2>Navigation is just scrolling</h2>
+      <div class="cols">
+        <div class="stack">
+          <h3>Zero JS (built in)</h3>
+          <ul>
+            <li>Swipe / trackpad / scrollbar</li>
+            <li><kbd>Tab</kbd> to the deck, then arrow keys</li>
+            <li>Dots &amp; edge arrows (pure CSS)</li>
+            <li>Deep links: <code>#slide-id</code></li>
+          </ul>
+        </div>
+        <div class="stack">
+          <h3>With dais.js</h3>
+          <ul>
+            <li>Arrow keys from anywhere</li>
+            <li><kbd>O</kbd> overview · <kbd>S</kbd> notes</li>
+            <li>URL follows the current slide</li>
+            <li>Counter in the control bar</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="reveals">
+      <h2>Incremental reveals</h2>
+      <p class="muted">Add <code>class="reveal"</code> to a list — items appear when the slide snaps in:</p>
+      <ul class="reveal">
+        <li>First this…</li>
+        <li>…then this…</li>
+        <li>…then this.</li>
+        <li>Powered by <code>scroll-state(snapped)</code> container queries</li>
+        <li>Browsers without support simply show everything at once</li>
+      </ul>
+      <aside class="notes">
+        Reveals replay each time the slide snaps in. Reduced-motion users and
+        print get everything immediately.
+      </aside>
+    </section>
+
+    <section class="slide divider" id="templates">
+      <h2>Slide templates</h2>
+      <p>title · divider · quote · media-full</p>
+    </section>
+
+    <section class="slide quote" id="quote">
+      <blockquote>
+        <p>The best presentation software is a browser you already have.</p>
+        <footer>— Every web developer, eventually</footer>
+      </blockquote>
+    </section>
+
+    <section class="slide media-full" id="media">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 90'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%232451b2'/%3E%3Cstop offset='1' stop-color='%23b23524'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='160' height='90' fill='url(%23g)'/%3E%3Ccircle cx='45' cy='40' r='22' fill='%23fdfdfc' opacity='.25'/%3E%3Ccircle cx='115' cy='55' r='30' fill='%23fdfdfc' opacity='.15'/%3E%3C/svg%3E"
+           alt="Abstract placeholder artwork: overlapping translucent circles on a blue-to-red gradient.">
+      <h2>media-full: edge-to-edge imagery with a caption bar</h2>
+    </section>
+
+    <section class="slide" id="utilities">
+      <h2>Light utilities, not a design system</h2>
+      <div class="cols" style="--cols: 3">
+        <div class="card stack">
+          <h3>Layout</h3>
+          <p class="small"><code>.cols</code> <code>.stack</code> <code>.center</code> <code>.spacer</code></p>
+        </div>
+        <div class="card stack">
+          <h3>Type</h3>
+          <p class="small"><code>.fit</code> <code>.muted</code> <code>.small</code> <code>.accent</code></p>
+        </div>
+        <div class="card stack">
+          <h3>Surface</h3>
+          <p class="small"><code>.card</code> — and beyond that, write your own CSS</p>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <p class="muted small">Anything not covered here is intentionally your own stylesheet's job.</p>
+    </section>
+
+    <section class="slide center" id="fit-demo">
+      <h2 class="fit">Big statements<br>welcome.</h2>
+    </section>
+
+    <section class="slide" id="theming">
+      <h2>Theming is ~20 custom properties</h2>
+      <pre><code>:root {
+  --dais-bg: #171021;        /* slide background   */
+  --dais-text: #efe9f7;      /* body text          */
+  --dais-accent: #ff8c2e;    /* headings, markers  */
+  --dais-font-display: "Eater", fantasy;
+  /* …see docs/theming.md for the full token list */
+}</code></pre>
+      <p class="muted">Link a theme file after <code>dais.css</code> — try the bundled
+        <a href="fantasy.html">fantasy</a> and <a href="spooky.html">spooky</a> demos.</p>
+    </section>
+
+    <section class="slide" id="a11y">
+      <h2>Accessible by construction</h2>
+      <ul>
+        <li>Landmarks and a heading per slide — screen readers navigate by outline</li>
+        <li>Decorative flourishes use <code>content: "…" / ""</code> alt-text syntax</li>
+        <li><code>prefers-reduced-motion</code> disables all animation</li>
+        <li>Focus is always visible; controls are labelled</li>
+      </ul>
+      <aside class="notes">
+        Mention: the no-CSS reading order is the same as the presented order,
+        which is the real accessibility test.
+      </aside>
+    </section>
+
+    <section class="slide" id="print">
+      <h2>Print to PDF, built in</h2>
+      <ol>
+        <li>Open the browser print dialog (<kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>P</kbd>)</li>
+        <li>Choose <strong>Save as PDF</strong> — one slide per 16:9 page</li>
+        <li>Add <code>class="dais-print-notes"</code> to <code>&lt;body&gt;</code> to include speaker notes</li>
+      </ol>
+    </section>
+
+    <section class="slide title" id="end">
+      <h2>Go make some slides</h2>
+      <p>Docs: <code>docs/authoring.md</code> · Reference: <code>docs/reference.md</code></p>
+    </section>
+
+  </main>
+
+</body>
+</html>
