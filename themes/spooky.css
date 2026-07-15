@@ -1,0 +1,164 @@
+/*!
+ * Dais theme: Spooky — Halloween ghosts, pumpkins, and midnight fog.
+ *
+ * Activate by linking this file AFTER dais.css:
+ *   <link rel="stylesheet" href="dais.css">
+ *   <link rel="stylesheet" href="themes/spooky.css">
+ *
+ * Optional display font (self-host or uncomment; falls back to system serif):
+ *   @import url("https://fonts.googleapis.com/css2?family=Eater&display=swap");
+ */
+
+:root {
+  --dais-stage: #060409;                 /* moonless night */
+  --dais-bg: #171021;                    /* midnight purple */
+  --dais-surface: #241a33;
+  --dais-text: #efe9f7;
+  --dais-muted: #a89ac2;
+  --dais-accent: #ff8c2e;                /* jack-o'-lantern orange */
+  --dais-accent-2: #9ee65c;              /* witch's-brew green */
+  --dais-code-bg: #0d0813;
+  --dais-code-text: #e8ddf5;
+
+  --dais-font-display: "Eater", "Copperplate", "Luminari", "Chalkduster", fantasy, serif;
+}
+
+/* Ground fog rising from the bottom of every slide. */
+.dais > section {
+  background:
+    radial-gradient(90cqi 45cqh at 50% 108%, rgb(168 154 194 / 0.16), transparent 70%),
+    radial-gradient(60cqi 40cqh at 88% -10%, rgb(255 140 46 / 0.07), transparent 60%),
+    var(--dais-bg);
+}
+
+/* A cobweb in the top-left corner (pure gradients, no images). */
+.dais > section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 12cqi;
+  aspect-ratio: 1;
+  pointer-events: none;
+  opacity: 0.35;
+  background:
+    repeating-radial-gradient(circle at 0 0,
+      transparent 0 1.6cqi,
+      rgb(239 233 247 / 0.5) 1.6cqi calc(1.6cqi + 1px)),
+    conic-gradient(from 0deg at 0 0,
+      transparent 0 10deg,  rgb(239 233 247 / 0.5) 10deg calc(10deg + 0.5px),
+      transparent calc(10deg + 0.5px) 40deg, rgb(239 233 247 / 0.5) 40deg calc(40deg + 0.5px),
+      transparent calc(40deg + 0.5px) 70deg, rgb(239 233 247 / 0.5) 70deg calc(70deg + 0.5px),
+      transparent calc(70deg + 0.5px) 90deg);
+  mask-image: radial-gradient(circle at 0 0, black 55%, transparent 72%);
+}
+
+/* Headings glow like a carved pumpkin. */
+.dais :is(h1, h2) {
+  color: var(--dais-accent);
+  text-shadow: 0 0 1.2cqi color-mix(in srgb, var(--dais-accent) 55%, transparent);
+}
+
+.dais strong {
+  color: var(--dais-accent-2);
+}
+
+/* Pumpkins for bullet points. */
+.dais ul > li::marker {
+  content: "🎃 " / "";
+}
+
+/* Title slide: a ghost drifts above the title. */
+.dais > section.title h1::before {
+  content: "👻" / "";
+  display: block;
+  font-size: 8cqi;
+  margin-block-end: 1cqi;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes dais-spooky-drift {
+    0%, 100% { translate: 0 0; rotate: -4deg; }
+    50%      { translate: 0 -1.4cqi; rotate: 4deg; }
+  }
+
+  .dais > section.title h1::before {
+    animation: dais-spooky-drift 3.5s ease-in-out infinite;
+  }
+
+  /* The title itself flickers on, like a faulty porch light. */
+  @keyframes dais-spooky-flicker {
+    0%, 18%, 22%, 62%, 64% { opacity: 0.35; text-shadow: none; }
+    20%, 24%, 55%, 66%, 100% {
+      opacity: 1;
+      text-shadow: 0 0 1.2cqi color-mix(in srgb, var(--dais-accent) 55%, transparent);
+    }
+  }
+
+  @container dais-slide scroll-state(snapped: x) {
+    .dais > section.title h1 {
+      animation: dais-spooky-flicker 2.2s steps(1, end) 1;
+    }
+  }
+}
+
+/* Dividers: a bat-winged interstitial in deeper darkness. */
+.dais > section.divider {
+  background:
+    radial-gradient(70cqi 55cqh at 50% 120%, rgb(255 140 46 / 0.22), transparent 65%),
+    var(--dais-code-bg);
+}
+
+.dais > section.divider :is(h2, h3, p) {
+  color: var(--dais-accent);
+}
+
+.dais > section.divider h2::before {
+  content: "🦇" / "";
+  display: block;
+  font-size: 5cqi;
+  margin-block-end: 1.2cqi;
+}
+
+/* Quotes are whispered from beyond. */
+.dais > section.quote blockquote {
+  border-inline-start-color: var(--dais-accent-2);
+  font-style: italic;
+  color: var(--dais-muted);
+}
+
+.dais > section.quote blockquote strong,
+.dais > section.quote blockquote em {
+  color: var(--dais-text);
+}
+
+/* Cards float like tombstones. */
+.dais .card {
+  border: 1px solid color-mix(in srgb, var(--dais-accent-2) 35%, transparent);
+  box-shadow: 0 0.6cqi 1.6cqi rgb(0 0 0 / 0.5);
+}
+
+/* Print: paper is light — swap to ink-friendly tokens so text stays legible. */
+@media print {
+  :root {
+    --dais-bg: #ffffff;
+    --dais-surface: #f0ecf6;
+    --dais-text: #241a33;
+    --dais-muted: #5c5075;
+    --dais-accent: #b35400;
+    --dais-accent-2: #3e7a10;
+  }
+
+  .dais > section,
+  .dais > section.divider {
+    background: var(--dais-bg);
+  }
+
+  .dais :is(h1, h2) {
+    text-shadow: none;
+  }
+
+  .dais > section::before {
+    display: none;             /* no cobwebs on paper */
+  }
+}

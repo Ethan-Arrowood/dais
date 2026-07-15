@@ -1,0 +1,134 @@
+/*!
+ * Dais theme: Fantasy — dragons, castles, parchment and gold.
+ *
+ * Activate by linking this file AFTER dais.css:
+ *   <link rel="stylesheet" href="dais.css">
+ *   <link rel="stylesheet" href="themes/fantasy.css">
+ *
+ * Optional display font (self-host or uncomment; falls back to Palatino):
+ *   @import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&display=swap");
+ */
+
+:root {
+  --dais-stage: #191008;                 /* torch-lit castle stone */
+  --dais-bg: #f3e7c9;                    /* parchment */
+  --dais-surface: #e9d9b0;
+  --dais-text: #38240f;                  /* walnut ink */
+  --dais-muted: #6f5732;
+  --dais-accent: #6e1a12;                /* dragon's-blood burgundy */
+  --dais-accent-2: #7c5a10;              /* old gold */
+  --dais-code-bg: #241708;
+  --dais-code-text: #f0e2bd;
+
+  --dais-font: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --dais-font-display: "Cinzel", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+
+  --dais-radius: 0.3cqi;
+}
+
+/* Parchment: a faint mottle so slides don't read as flat beige. */
+.dais > section {
+  background:
+    radial-gradient(120cqi 90cqh at 20% 10%, rgb(255 250 235 / 0.55), transparent 60%),
+    radial-gradient(100cqi 80cqh at 85% 90%, rgb(120 84 40 / 0.10), transparent 55%),
+    var(--dais-bg);
+}
+
+/* A gilded double-rule frame inside every slide. */
+.dais > section::before {
+  content: "";
+  position: absolute;
+  inset: 1.4cqi;
+  border: 0.22cqi double var(--dais-accent-2);
+  border-radius: 0.4cqi;
+  pointer-events: none;
+}
+
+/* Headings in small caps with a fleuron. */
+.dais :is(h1, h2) {
+  font-variant: small-caps;
+  letter-spacing: 0.01em;
+}
+
+.dais h2::after {
+  content: " ❧" / "";
+  color: var(--dais-accent-2);
+  font-size: 0.6em;
+  vertical-align: middle;
+}
+
+/* Crossed swords for bullet points. */
+.dais ul > li::marker {
+  content: "⚔ " / "";
+  color: var(--dais-accent);
+}
+
+/* Title slide: the castle gate. */
+.dais > section.title h1::before {
+  content: "🏰" / "";
+  display: block;
+  font-size: 8cqi;
+  margin-block-end: 1cqi;
+}
+
+.dais > section.title::before {
+  border-width: 0.5cqi;
+  border-style: double;
+}
+
+/* Dividers become heraldic banners with crenellated edges. */
+.dais > section.divider {
+  background:
+    /* battlements along the top edge */
+    repeating-linear-gradient(90deg,
+      var(--dais-accent-2) 0 4cqi,
+      transparent 4cqi 8cqi)
+      top / 100% 1.6cqi no-repeat,
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--dais-accent) 88%, black) 0%,
+      var(--dais-accent) 45%,
+      color-mix(in srgb, var(--dais-accent) 80%, black) 100%);
+}
+
+.dais > section.divider::before {
+  content: none;               /* no parchment frame on banners */
+}
+
+.dais > section.divider h2::before {
+  content: "🐉" / "";
+  display: block;
+  font-size: 6cqi;
+  margin-block-end: 1.2cqi;
+}
+
+.dais > section.divider h2::after {
+  content: none;
+}
+
+/* Quotes open with an illuminated initial. */
+.dais > section.quote blockquote {
+  border-inline-start-color: var(--dais-accent-2);
+  font-style: italic;
+}
+
+.dais > section.quote blockquote > p:first-of-type::first-letter {
+  font-family: var(--dais-font-display);
+  font-style: normal;
+  font-size: 2.2em;
+  line-height: 0.8;
+  color: var(--dais-accent);
+  float: inline-start;
+  padding-inline-end: 0.12em;
+}
+
+/* Cards look like aged scroll fragments. */
+.dais .card {
+  border: 1px solid color-mix(in srgb, var(--dais-accent-2) 60%, transparent);
+  box-shadow: 0.3cqi 0.3cqi 0 color-mix(in srgb, var(--dais-accent-2) 25%, transparent);
+}
+
+/* Speaker-note panels read as marginalia. */
+body:has(.dais-notes-toggle:checked) .dais .notes {
+  border-top-color: var(--dais-accent-2);
+  font-style: italic;
+}

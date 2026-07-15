@@ -128,9 +128,9 @@ A deck is one HTML page:
 with a restrained accent — entirely through custom properties (`--dais-bg`,
 `--dais-surface`, `--dais-text`, `--dais-muted`, `--dais-accent`,
 `--dais-accent-2`, `--dais-font`, `--dais-font-display`, `--dais-font-mono`,
-`--dais-radius`, …). A theme file overrides tokens and may add scoped
-flourishes (borders, list markers, keyframe accents) under a
-`.dais-theme-<name>` class on `<html>` or `<body>`. Two demonstration themes
+`--dais-radius`, …). A theme file overrides tokens on `:root` and may add
+flourishes (borders, list markers, keyframe accents); linking the theme file
+after `dais.css` is all it takes to activate it. Two demonstration themes
 ship with the prototype: **fantasy** (parchment, gold, dragons and castles)
 and **spooky** (midnight purple, pumpkin orange, ghosts).
 
