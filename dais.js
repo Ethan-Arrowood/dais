@@ -56,11 +56,14 @@
     slide.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
   };
 
+  const updateCounter = () => {
+    if (counter) counter.textContent = `${currentIndex() + 1} / ${slides.length}`;
+  };
+
   const sync = () => {
-    const i = currentIndex();
-    if (counter) counter.textContent = `${i + 1} / ${slides.length}`;
+    updateCounter();
     // Update the hash without adding history entries or re-scrolling.
-    history.replaceState(null, "", `#${slides[i].id}`);
+    history.replaceState(null, "", `#${slides[currentIndex()].id}`);
   };
 
   // "scrollend" fires once snapping settles; fall back to debounced "scroll".
@@ -73,7 +76,15 @@
       t = setTimeout(sync, 120);
     }, { passive: true });
   }
-  sync();
+
+  // On load: honor an incoming deep link ourselves (the browser's own
+  // scroll-to-fragment can race with deferred scripts), and only update the
+  // counter — writing the hash here would clobber the deep link.
+  const target = location.hash && document.getElementById(location.hash.slice(1));
+  if (target && slides.includes(target)) {
+    target.scrollIntoView({ behavior: "auto", inline: "center", block: "nearest" });
+  }
+  updateCounter();
 
   document.addEventListener("keydown", (event) => {
     // Never steal keys from form fields or editable content.

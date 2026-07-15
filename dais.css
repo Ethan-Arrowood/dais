@@ -39,9 +39,10 @@
   --dais-font-display: var(--dais-font);
   --dais-font-mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
 
-  /* Shape & rhythm */
+  /* Shape & rhythm. Slide padding uses %, which (like cqi) resolves against
+     the slide's inline size in every axis, so it scales in overview/print. */
   --dais-radius: 0.5cqi;
-  --dais-slide-padding: 5cqi 7cqi;
+  --dais-slide-padding: 5% 7%;
   --dais-reveal-step: 0.35s;     /* stagger between incremental reveal items */
 }
 
@@ -86,6 +87,10 @@ body {
   counter-reset: dais-slide;
   anchor-name: --dais;
   scroll-timeline: --dais-scroller x;
+  /* Size container: cqi units declared ON a slide (the nearest inner
+     container) resolve against the nearest ANCESTOR container, i.e. this
+     element — which matches the slide's own size in presentation mode. */
+  container: dais-deck / size;
 }
 
 .dais:focus-visible {
@@ -185,11 +190,19 @@ body {
   padding: var(--dais-slide-padding);
   display: flex;
   flex-direction: column;
-  gap: 1.2cqi;
+  gap: 2%;                     /* % of slide height ≈ scales like cqi */
   background: var(--dais-bg);
   color: var(--dais-text);
-  font-size: 2.4cqi;
+  font-size: 2.4cqi;           /* resolves against the deck container */
   line-height: 1.45;
+}
+
+/* Re-anchor the base font size on each slide's direct children so it
+   resolves against the SLIDE container — this is what keeps typography
+   proportional in overview mode, where deck and slide sizes diverge.
+   :where() keeps specificity at zero so any component rule wins. */
+:where(.dais) > section > * {
+  font-size: 2.4cqi;
 }
 
 .dais > section * {
@@ -347,7 +360,7 @@ body {
   justify-content: center;
   align-items: center;
   text-align: center;
-  gap: 2cqi;
+  gap: 3.5%;
 }
 
 .dais > section.title p {
@@ -689,6 +702,8 @@ body:has(.dais-overview-toggle:checked) .dais-progress {
     width: auto;
     aspect-ratio: auto;
     overflow: visible;
+    /* Size containment would collapse the block-flow deck to zero height. */
+    container-type: normal;
   }
 
   .dais > section {
@@ -696,6 +711,10 @@ body:has(.dais-overview-toggle:checked) .dais-progress {
     height: 180mm;
     break-after: page;
     break-inside: avoid;
+  }
+
+  .dais > section:last-child {
+    break-after: auto;         /* no trailing blank page */
   }
 
   .dais .reveal > * {
