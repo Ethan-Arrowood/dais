@@ -4,6 +4,9 @@
 # macOS
 .DS_Store
 
+# Staged GitHub Pages output
+_site/
+
 # Local render/export output
 *.pdf
 *.png

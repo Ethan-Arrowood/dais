@@ -70,7 +70,9 @@ npx dais-serve      # -> http://localhost:4321
 
 ## Try it
 
-Open any of the examples straight from disk — no server, no build:
+**[See it running →](https://ethan-arrowood.github.io/dais/)** — the example decks, live.
+
+Or open any of them straight from disk — no server, no build:
 
 - [examples/default.html](examples/default.html) — the kitchen sink, and a
   self-documenting tour of every feature
