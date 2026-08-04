@@ -1,6 +1,6 @@
 {
   "name": "@arrowood.dev/dais",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A web-native presentation framework: one CSS file and an HTML convention. Semantic slides, no build step, no required JavaScript.",
   "keywords": [
     "presentation",

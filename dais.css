@@ -845,6 +845,13 @@ body:has(.dais-overview-toggle:checked) .dais-progress {
     display: none;
   }
 
+  /* The pure-CSS arrows and dots are position: fixed, so paged media places
+     them on every sheet. They are navigation, not content — drop them. */
+  .dais::scroll-button(*),
+  .dais::scroll-marker-group {
+    display: none;
+  }
+
   .dais .notes {
     display: none;
   }
