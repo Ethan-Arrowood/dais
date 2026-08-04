@@ -1,0 +1,11 @@
+# Agent scratch space, worktrees, and local tooling config
+.claude/
+
+# macOS
+.DS_Store
+
+# Local render/export output
+*.pdf
+*.png
+!docs/**/*.png
+!examples/**/*.png

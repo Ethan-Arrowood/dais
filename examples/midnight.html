@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Making the Slow Thing Fast</title>
+  <link rel="stylesheet" href="../dais.css">
+  <link rel="stylesheet" href="../themes/midnight.css">
+  <script src="../dais.js" defer></script>
+</head>
+<body>
+
+  <nav class="dais-controls" aria-label="Presentation controls">
+    <label><input type="checkbox" class="dais-overview-toggle"> Overview</label>
+    <label><input type="checkbox" class="dais-notes-toggle"> Notes</label>
+    <output class="dais-counter"></output>
+    <output class="dais-timer" data-dais-limit="30" title="Presenter timer — click or press T to pause"></output>
+  </nav>
+
+  <div class="dais-progress" aria-hidden="true"></div>
+
+  <main class="dais" aria-label="Making the Slow Thing Fast" tabindex="0">
+
+    <section class="slide title" id="intro">
+      <h1>Making the Slow Thing Fast</h1>
+      <p>A conference talk · The Midnight theme</p>
+      <aside class="notes">
+        The presenter timer in the top-right starts the moment you advance off
+        this slide. Press T to pause it, and note it turns amber at 24 minutes
+        of the 30-minute budget.
+      </aside>
+    </section>
+
+    <section class="slide" id="numbers">
+      <h2>Measure first</h2>
+      <table>
+        <caption>p99 latency, 10k requests, warm cache</caption>
+        <thead>
+          <tr><th>Change</th><th class="num">p50</th><th class="num">p99</th><th class="num">RPS</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Baseline</td>            <td class="num">18 ms</td> <td class="num">240 ms</td> <td class="num">4,100</td></tr>
+          <tr><td>Pooled connections</td>  <td class="num">14 ms</td> <td class="num">121 ms</td> <td class="num">5,900</td></tr>
+          <tr><td>Batched writes</td>      <td class="num">11 ms</td> <td class="num">58 ms</td>  <td class="num">8,400</td></tr>
+          <tr><td><strong>Both</strong></td><td class="num">9 ms</td> <td class="num">31 ms</td>  <td class="num">11,200</td></tr>
+        </tbody>
+      </table>
+      <aside class="notes">
+        Numeric columns get <code>class="num"</code> so they right-align and use
+        tabular figures — the digits line up column-wise.
+      </aside>
+    </section>
+
+    <section class="slide" id="the-code">
+      <h2>The hot path, before</h2>
+      <pre><code><span class="tok-keyword">for</span> (<span class="tok-keyword">const</span> id <span class="tok-keyword">of</span> ids) {
+  <span class="tok-comment">// One round trip per id. This is the bug.</span>
+  <span class="tok-keyword">const</span> row = <span class="tok-keyword">await</span> db.<span class="tok-fn">get</span>(<span class="tok-string">'users'</span>, id);
+  results.<span class="tok-fn">push</span>(<span class="tok-fn">shape</span>(row));
+}</code></pre>
+      <aside class="notes">
+        Syntax colors come from <code>.tok-*</code> spans. Nothing highlights at
+        runtime — you write the spans, or emit them from Shiki at author time.
+      </aside>
+    </section>
+
+    <section class="slide" id="the-fix">
+      <h2>The hot path, after</h2>
+      <pre><code><span class="line dim"><span class="tok-keyword">const</span> ids = req.query.ids.<span class="tok-fn">split</span>(<span class="tok-string">','</span>);</span>
+<span class="line hl"><span class="tok-keyword">const</span> rows = <span class="tok-keyword">await</span> db.<span class="tok-fn">getMany</span>(<span class="tok-string">'users'</span>, ids);</span>
+<span class="line dim"><span class="tok-keyword">const</span> results = rows.<span class="tok-fn">map</span>(shape);</span></code></pre>
+      <p class="small muted">One call. <mark>N round trips become 1.</mark></p>
+      <aside class="notes">
+        <code>.line.hl</code> calls out the line that matters;
+        <code>.line.dim</code> pushes the context back. Both are optional —
+        plain <code>&lt;pre&gt;&lt;code&gt;</code> is still fine.
+      </aside>
+    </section>
+
+    <section class="slide divider" id="part-two">
+      <h2>Part two: keeping it fast</h2>
+      <p>Regression tests, not vibes</p>
+    </section>
+
+    <section class="slide" id="guard">
+      <h2>Guard the win</h2>
+      <div class="cols">
+        <div class="card">
+          <h3>Assert the budget</h3>
+          <pre><code><span class="tok-fn">assert</span>.<span class="tok-fn">ok</span>(
+  p99 &lt; <span class="tok-number">50</span>,
+  <span class="tok-string">`p99 was ${p99}ms`</span>
+);</code></pre>
+        </div>
+        <div class="card">
+          <h3>Why a budget beats a baseline</h3>
+          <ul class="reveal">
+            <li>Survives new hardware</li>
+            <li>Fails loudly, not statistically</li>
+            <li>Reads as a product decision</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide quote" id="quote">
+      <blockquote>
+        Premature optimization is the root of all evil.
+        <footer>— Donald Knuth, <cite>Structured Programming with go to Statements</cite>, 1974</footer>
+      </blockquote>
+      <aside class="notes">The other half of the sentence matters. Read it out.</aside>
+    </section>
+
+    <section class="slide center" id="takeaway">
+      <h2 class="fit">Measure. Fix one thing. Measure again.</h2>
+    </section>
+
+    <section class="slide title no-number" id="thanks">
+      <h2>Thank you</h2>
+      <p>Questions · Slides built with Dais</p>
+    </section>
+
+  </main>
+</body>
+</html>

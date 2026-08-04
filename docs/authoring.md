@@ -109,6 +109,76 @@ Dais ships exactly five layout utilities — beyond these, write your own CSS:
 Type helpers: `.fit` (giant statement text), `.muted`, `.small`, `.accent`,
 `.accent-2`.
 
+### Tables
+
+Write an ordinary `<table>`. Dais styles it for a projector: an accent header
+rule, hairline row separators, and `font-variant-numeric: tabular-nums` so
+digits line up in a column. Add `class="num"` to numeric cells and headers to
+right-align them, and put the units in a `<caption>` rather than in every row:
+
+```html
+<table>
+  <caption>p99 latency, 10k requests</caption>
+  <thead>
+    <tr><th>Change</th><th class="num">p50</th><th class="num">p99</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Baseline</td><td class="num">18 ms</td><td class="num">240 ms</td></tr>
+    <tr><td>Batched writes</td><td class="num">11 ms</td><td class="num">58 ms</td></tr>
+  </tbody>
+</table>
+```
+
+A slide-sized table is about **5 rows and 4 columns**. Past that, cut rows or
+show a chart — a table nobody can read from row 15 is a handout, not a slide.
+
+### Code
+
+`<pre><code>` is styled for you: a dark inset panel at `--dais-code-size`
+(`0.72em` of the slide's body text). Shrink it per-deck or per-block for a long
+snippet — `style="--dais-code-size: 0.6em"` — rather than letting the block
+scroll, because a scrollbar mid-talk is a dead end.
+
+Dais never highlights code at runtime. Instead there's a small class
+vocabulary you can write by hand or emit from a highlighter (Shiki,
+highlight.js) at author time:
+
+| Class | For |
+|---|---|
+| `tok-comment` | comments (rendered italic) |
+| `tok-keyword` | keywords and operators |
+| `tok-string` | string and template literals |
+| `tok-number` | numeric and boolean literals |
+| `tok-fn` | function and method names |
+| `tok-type` | types, classes, constructors |
+| `tok-punct` | brackets, separators |
+
+```html
+<pre><code><span class="tok-keyword">const</span> rows = <span
+class="tok-keyword">await</span> db.<span class="tok-fn">getMany</span>(<span
+class="tok-string">'users'</span>, ids);</code></pre>
+```
+
+Each color clears WCAG AA against `--dais-code-bg`; retune them with the
+`--dais-tok-*` tokens if you retheme, and re-check contrast when you do.
+
+To talk through a block line by line, wrap each line in `<span class="line">`
+and add:
+
+- **`hl`** — call this line out (accent wash plus an edge bar)
+- **`dim`** — push a line back to 40% opacity as context
+- **`add`** / **`del`** — diff-style green/red line backgrounds
+
+```html
+<pre><code><span class="line dim">const ids = req.query.ids.split(',');</span>
+<span class="line hl">const rows = await db.getMany('users', ids);</span>
+<span class="line dim">const results = rows.map(shape);</span></code></pre>
+```
+
+`<mark>` works inside code too, and `.dim` works on any inline span, not just
+whole lines. Because `add`/`del` and `hl` are color-only signals, don't let
+them carry meaning your narration doesn't also state.
+
 ### Sizing rule of thumb
 
 Slide typography is defined in `cqi` units (1cqi = 1% of the slide's width),
@@ -166,7 +236,25 @@ Put notes at the end of a slide in an `<aside class="notes">`:
 | Overview grid | Overview checkbox | <kbd>O</kbd>; click a thumbnail to jump; <kbd>Esc</kbd> exits |
 | Speaker notes | Notes checkbox | <kbd>S</kbd> |
 | Jump to a slide | edit the URL hash | URL hash follows you as you present |
+| Presenter timer | — | <kbd>T</kbd> pauses/resumes (see below) |
 | Fullscreen | the browser's own key (<kbd>F11</kbd> / <kbd>⌃⌘F</kbd>) | same |
+
+### The presenter timer
+
+Add an `<output class="dais-timer">` to `.dais-controls` and `dais.js` runs it
+as a talk clock:
+
+```html
+<output class="dais-timer" data-dais-limit="30"></output>
+```
+
+- It **starts by itself** when you first advance off the opening slide — the
+  moment you actually start talking — so there's no button to forget.
+- <kbd>T</kbd> or a click pauses and resumes it. Reloading resets it.
+- `data-dais-limit` is your slot in minutes. The clock turns amber at 80% of
+  it and red when you're over. Omit the attribute for a plain stopwatch.
+- Without `dais.js` the element stays empty and hidden, so it never leaves a
+  gap in the control bar.
 
 Practical presenting notes:
 
@@ -185,10 +273,14 @@ Practical presenting notes:
 1. Open the print dialog (<kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>P</kbd>).
 2. Destination: **Save as PDF**. Margins: none/default. Background graphics:
    **on** (for themes).
-3. Each slide becomes one 16:9 page. Reveal content is fully visible;
-   controls, dots, and the progress bar disappear.
+3. Each slide becomes one page, sized from `--dais-aspect` — 320 × 180 mm at
+   the default 16:9, 240 × 180 mm if you set `4 / 3`. Reveal content is fully
+   visible; controls, dots, and the progress bar disappear.
 4. Add `class="dais-print-notes"` to `<body>` to print speaker notes on each
    slide.
+
+Page height comes from `--dais-page-height` (`180mm`); the width is always
+derived from it and the aspect ratio, so you never set the two independently.
 
 Themes may re-tokenize for paper — the spooky theme, for instance, swaps its
 midnight palette for an ink-friendly one under `@media print`.

@@ -34,6 +34,16 @@
   --dais-code-bg: #14161a;
   --dais-code-text: #e8eaed;
 
+  /* Syntax highlighting (the .tok-* classes). Every value below clears WCAG
+     AA against --dais-code-bg; keep that true if you retune them. */
+  --dais-tok-comment: #8792a2;
+  --dais-tok-keyword: #c792ea;
+  --dais-tok-string: #a5d6a7;
+  --dais-tok-number: #f2a071;
+  --dais-tok-fn: #82aaff;
+  --dais-tok-type: #7fdbca;
+  --dais-tok-punct: #99a3b3;
+
   /* Type */
   --dais-font: system-ui, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
   --dais-font-display: var(--dais-font);
@@ -44,6 +54,10 @@
   --dais-radius: 0.5cqi;
   --dais-slide-padding: 5% 7%;
   --dais-reveal-step: 0.35s;     /* stagger between incremental reveal items */
+  --dais-code-size: 0.72em;      /* <pre> size; shrink for long snippets */
+
+  /* Printed page height; the width is derived from --dais-aspect. */
+  --dais-page-height: 180mm;
 }
 
 /* -------------------------------------------------------------------------
@@ -303,6 +317,47 @@ body {
   color: var(--dais-muted);
 }
 
+/* --- Tables --------------------------------------------------------------- */
+
+.dais table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.85em;
+  font-variant-numeric: tabular-nums;
+}
+
+.dais :is(th, td) {
+  padding: 0.4em 0.8em;
+  text-align: start;
+  border-block-end: 1px solid color-mix(in srgb, var(--dais-text) 15%, transparent);
+}
+
+.dais th {
+  color: var(--dais-accent);
+  font-weight: 600;
+}
+
+.dais thead th {
+  border-block-end: 0.25cqi solid var(--dais-accent);
+}
+
+.dais tbody tr:last-child :is(th, td) {
+  border-block-end: none;
+}
+
+/* Right-align a numeric column: <td class="num">. */
+.dais :is(th, td).num {
+  text-align: end;
+}
+
+.dais caption {
+  caption-side: bottom;
+  padding-block-start: 0.6em;
+  font-size: 0.8em;
+  color: var(--dais-muted);
+  text-align: start;
+}
+
 /* --- Code ----------------------------------------------------------------- */
 
 .dais code,
@@ -331,7 +386,7 @@ body {
   color: var(--dais-code-text);
   padding: 1.6cqi 2cqi;
   border-radius: var(--dais-radius);
-  font-size: 0.72em;
+  font-size: var(--dais-code-size);
   line-height: 1.5;
   text-align: start;
   overflow: auto;
@@ -349,6 +404,55 @@ body {
   color: inherit;
   padding: 0.05em 0.2em;
   border-radius: 0.2em;
+}
+
+/* --- Syntax highlighting --------------------------------------------------
+ *
+ * A small, hand-authorable class vocabulary. Wrap spans yourself for short
+ * snippets, or emit these classes from a highlighter at author time — Dais
+ * never highlights at runtime. See docs/authoring.md.
+ * ---------------------------------------------------------------------- */
+
+.dais .tok-comment { color: var(--dais-tok-comment); font-style: italic; }
+.dais .tok-keyword { color: var(--dais-tok-keyword); }
+.dais .tok-string  { color: var(--dais-tok-string); }
+.dais .tok-number  { color: var(--dais-tok-number); }
+.dais .tok-fn      { color: var(--dais-tok-fn); }
+.dais .tok-type    { color: var(--dais-tok-type); }
+.dais .tok-punct   { color: var(--dais-tok-punct); }
+
+/* One line per <span class="line">, so lines can be called out or dimmed.
+   Flex column, not block flow: a flex container drops whitespace-only child
+   text nodes, so the newlines *between* line spans don't each render as an
+   extra blank line. min-width keeps long lines scrollable rather than clipped.
+   Only applied when line spans are actually present. */
+.dais pre code:has(.line) {
+  display: flex;
+  flex-direction: column;
+  min-width: max-content;
+}
+
+/* Bleed the full-width line background out to the <pre> padding edges. */
+.dais pre .line {
+  margin-inline: -2cqi;
+  padding-inline: 2cqi;
+}
+
+.dais pre .line.hl {
+  background: color-mix(in srgb, var(--dais-accent) 26%, transparent);
+  box-shadow: inset 0.35cqi 0 0 var(--dais-accent);
+}
+
+.dais pre .line.add { background: color-mix(in srgb, var(--dais-tok-string) 18%, transparent); }
+.dais pre .line.del { background: color-mix(in srgb, var(--dais-accent-2) 20%, transparent); }
+
+/* Push finished/irrelevant code back so the point stands out. */
+.dais pre .dim { opacity: 0.4; }
+
+/* <mark> needs more punch on a dark code background than on a slide. */
+.dais pre mark {
+  background: color-mix(in srgb, var(--dais-accent) 32%, transparent);
+  color: var(--dais-code-text);
 }
 
 /* -------------------------------------------------------------------------
@@ -593,10 +697,22 @@ body:has(.dais-notes-toggle:checked) .dais .notes {
   accent-color: var(--dais-accent);
 }
 
-/* Slide counter placeholder; dais.js upgrades it to "n / N". */
-.dais-counter:empty {
+/* Slide counter and presenter timer; dais.js fills both, so they stay
+   hidden when the script isn't loaded. */
+.dais-counter:empty,
+.dais-timer:empty {
   display: none;
 }
+
+.dais-timer {
+  font-variant-numeric: tabular-nums;
+  min-width: 3.2em;
+  text-align: end;
+  cursor: pointer;
+}
+
+.dais-timer.is-warn { color: #ffd479; }
+.dais-timer.is-over { color: #ff9c8f; font-weight: 700; }
 
 /* -------------------------------------------------------------------------
  * 9. Overview mode
@@ -687,7 +803,8 @@ body:has(.dais-overview-toggle:checked) .dais-progress {
 
 @media print {
   @page {
-    size: 320mm 180mm;
+    /* Derived from --dais-aspect, so a 4/3 deck prints 4/3 pages. */
+    size: calc(var(--dais-page-height) * var(--dais-aspect)) var(--dais-page-height);
     margin: 0;
   }
 
@@ -707,8 +824,8 @@ body:has(.dais-overview-toggle:checked) .dais-progress {
   }
 
   .dais > section {
-    width: 320mm;
-    height: 180mm;
+    width: calc(var(--dais-page-height) * var(--dais-aspect));
+    height: var(--dais-page-height);
     break-after: page;
     break-inside: avoid;
   }

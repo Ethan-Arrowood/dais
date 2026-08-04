@@ -22,12 +22,15 @@ ordinary selectors. No classes, attributes, or JS hooks are involved.
 | `--dais-accent` | Headings, links, markers, active dot, divider bg | blue |
 | `--dais-accent-2` | `<strong>`, `<mark>`, secondary highlights | red |
 | `--dais-code-bg` / `--dais-code-text` | Code blocks | dark / light |
+| `--dais-tok-*` | Syntax colors (`comment` `keyword` `string` `number` `fn` `type` `punct`) | tuned for a dark code bg |
 | `--dais-font` | Body font stack | system-ui stack |
 | `--dais-font-display` | Headings | inherits `--dais-font` |
 | `--dais-font-mono` | Code | ui-monospace stack |
 | `--dais-radius` | Corner rounding | `0.5cqi` |
 | `--dais-slide-padding` | Slide inset | `5% 7%` |
 | `--dais-reveal-step` | Delay between reveal items | `0.35s` |
+| `--dais-code-size` | `<pre>` font size | `0.72em` |
+| `--dais-page-height` | Printed page height (width follows `--dais-aspect`) | `180mm` |
 
 A complete, respectable theme can be nothing but a `:root` block overriding
 six colors and a font.
@@ -42,6 +45,7 @@ Keep these pairs at **WCAG AA for large text (3:1) or better — aim for
 - `--dais-bg` on `--dais-accent` (divider slides invert)
 - `--dais-muted` on `--dais-bg` (≥ 4.5:1; it's still content)
 - `--dais-code-text` on `--dais-code-bg`
+- every `--dais-tok-*` on `--dais-code-bg` (they are code, not decoration)
 
 Projectors crush contrast dramatically — if a pairing looks marginal on your
 laptop, it is unreadable on stage.
@@ -55,6 +59,11 @@ are the reference examples:
   (layered gradients), a gilded double-rule frame (`section::before`),
   small-caps headings with a fleuron, ⚔ list markers, a castle over the
   title, crenellated banner dividers, illuminated drop caps on quotes.
+- [`themes/midnight.css`](../themes/midnight.css) — the one to copy for a
+  technical talk: dark, restrained, no ornament. Hairline borders on code and
+  cards (their surfaces sit close to the slide), a quiet divider instead of a
+  full accent field, zebra-striped table rows, `color-scheme: dark` so the
+  presenter checkboxes match, and an ink palette under `@media print`.
 - [`themes/spooky.css`](../themes/spooky.css) — midnight palette, ground
   fog and a gradient-drawn cobweb, glowing headings, 🎃 list markers, a
   drifting ghost over the title, a flicker-on title animation, and an

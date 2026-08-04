@@ -13,8 +13,11 @@
  *   - URL hash sync while scrolling, so reloads and shared links resume
  *     on the current slide
  *   - Fills any <output class="dais-counter"> with "n / N"
+ *   - Drives any <output class="dais-timer"> as a presenter clock: it starts
+ *     when you first advance past the opening slide, "t" pauses/resumes, and
+ *     data-dais-limit="30" turns it amber at 80% of 30 minutes, red at 100%
  *
- * No dependencies. ~2 KB unminified. Include with:
+ * No dependencies. Include with:
  *   <script src="dais.js" defer></script>
  */
 (() => {
@@ -32,6 +35,7 @@
   });
 
   const counter = document.querySelector(".dais-counter");
+  const timer = document.querySelector(".dais-timer");
   const overviewToggle = document.querySelector(".dais-overview-toggle");
   const notesToggle = document.querySelector(".dais-notes-toggle");
   const inOverview = () => Boolean(overviewToggle && overviewToggle.checked);
@@ -60,8 +64,42 @@
     if (counter) counter.textContent = `${currentIndex() + 1} / ${slides.length}`;
   };
 
+  // --- Presenter timer ------------------------------------------------------
+  // Elapsed talk time. Accumulates in `banked` while paused so pause/resume
+  // doesn't lose the clock. A reload starts over, by design.
+  const limitMs = Number(timer?.dataset.daisLimit) > 0
+    ? Number(timer.dataset.daisLimit) * 60_000
+    : 0;
+  let banked = 0;
+  let startedAt = 0;
+  let ticking = false;
+
+  const drawTimer = () => {
+    const ms = banked + (ticking ? performance.now() - startedAt : 0);
+    const secs = Math.floor(ms / 1000);
+    timer.textContent = `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, "0")}`;
+    timer.classList.toggle("is-over", limitMs > 0 && ms >= limitMs);
+    timer.classList.toggle("is-warn", limitMs > 0 && ms >= limitMs * 0.8 && ms < limitMs);
+  };
+
+  const runTimer = (on) => {
+    if (!timer || on === ticking) return;
+    if (on) startedAt = performance.now();
+    else banked += performance.now() - startedAt;
+    ticking = on;
+    drawTimer();
+  };
+
+  if (timer) {
+    drawTimer();
+    setInterval(drawTimer, 250);
+    timer.addEventListener("click", () => runTimer(!ticking));
+  }
+
   const sync = () => {
     updateCounter();
+    // Leaving the opening slide is the presenter starting the talk.
+    if (timer && !ticking && banked === 0 && currentIndex() > 0) runTimer(true);
     // Update the hash without adding history entries or re-scrolling.
     history.replaceState(null, "", `#${slides[currentIndex()].id}`);
   };
@@ -88,7 +126,8 @@
 
   document.addEventListener("keydown", (event) => {
     // Never steal keys from form fields or editable content.
-    if (event.target.closest("input, textarea, select, [contenteditable]")) return;
+    if (event.target instanceof Element &&
+        event.target.closest("input, textarea, select, [contenteditable]")) return;
     if (event.altKey || event.ctrlKey || event.metaKey) return;
 
     switch (event.key) {
@@ -122,6 +161,9 @@
         break;
       case "s":
         if (notesToggle) notesToggle.checked = !notesToggle.checked;
+        break;
+      case "t":
+        runTimer(!ticking);
         break;
       case "Escape":
         if (overviewToggle) overviewToggle.checked = false;

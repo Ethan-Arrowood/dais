@@ -49,6 +49,16 @@ Open any of the examples straight from disk — no server, no build:
   (parchment, gold, dragons)
 - [examples/spooky.html](examples/spooky.html) — the 👻 **spooky** theme
   (midnight purple, pumpkins, one tasteful cobweb)
+- [examples/midnight.html](examples/midnight.html) — the **midnight** theme:
+  a restrained dark deck for technical talks, with syntax-highlighted code,
+  line callouts, a benchmark table, and the presenter timer
+
+Or serve the directory and browse from a landing page. There is nothing to
+install — it's static files:
+
+```
+node serve.mjs      # -> http://localhost:4321
+```
 
 ## What you get
 
@@ -61,7 +71,8 @@ Open any of the examples straight from disk — no server, no build:
 | Overview grid | Checkbox toggle (or press <kbd>O</kbd>) re-lays the deck as thumbnails | No |
 | Print / PDF | <kbd>⌘P</kbd> → Save as PDF; one 16:9 page per slide | No |
 | Progress bar | Optional element driven by a scroll timeline | No |
-| Arrow keys from anywhere, `n / N` counter, URL hash sync, click-a-thumbnail | `dais.js` (~2 KB, dependency-free, optional) | Yes |
+| Presenter timer | `<output class="dais-timer" data-dais-limit="30">` — auto-starts, warns at 80% of your slot | Yes |
+| Arrow keys from anywhere, `n / N` counter, URL hash sync, click-a-thumbnail | `dais.js` (dependency-free, optional) | Yes |
 
 Because slides are semantic HTML (`<main>` → `<section>` → headings, lists,
 figures), the deck is also a readable document: with CSS off, in a screen
@@ -72,9 +83,12 @@ reader, in Reader Mode, or in a search index.
 ```
 dais.css            the framework (engine + templates + utilities + print)
 dais.js             optional progressive enhancement
+themes/midnight.css drop-in theme: restrained dark, built for code
 themes/fantasy.css  drop-in theme: dragons & castles
 themes/spooky.css   drop-in theme: Halloween
-examples/           three complete decks
+examples/           four complete decks
+index.html          landing page linking the examples and docs
+serve.mjs           zero-dependency static server for local preview
 docs/               human documentation (start with authoring.md)
 AGENTS.md           condensed rules for AI coding agents
 DESIGN.md           research notes and architectural rationale
@@ -115,3 +129,7 @@ ship the remaining pieces.
    plain document, Dais considers that a bug in the deck.
 3. **Not a design system.** A handful of templates and utilities; for
    everything else, write CSS. Dais stays out of your way.
+
+## License
+
+[MIT](LICENSE) © Ethan Arrowood
