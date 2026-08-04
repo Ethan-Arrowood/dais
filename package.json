@@ -1,0 +1,56 @@
+{
+  "name": "@arrowood.dev/dais",
+  "version": "0.1.0",
+  "description": "A web-native presentation framework: one CSS file and an HTML convention. Semantic slides, no build step, no required JavaScript.",
+  "keywords": [
+    "presentation",
+    "slides",
+    "slide-deck",
+    "css",
+    "scroll-snap",
+    "no-build",
+    "html"
+  ],
+  "license": "MIT",
+  "author": "Ethan Arrowood <ethan@arrowood.dev> (https://ethanarrowood.com)",
+  "homepage": "https://github.com/Ethan-Arrowood/dais#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ethan-Arrowood/dais.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Ethan-Arrowood/dais/issues"
+  },
+  "type": "module",
+  "exports": {
+    "./dais.css": "./dais.css",
+    "./dais.js": "./dais.js",
+    "./themes/midnight.css": "./themes/midnight.css",
+    "./themes/fantasy.css": "./themes/fantasy.css",
+    "./themes/spooky.css": "./themes/spooky.css",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "dais-serve": "serve.mjs"
+  },
+  "files": [
+    "dais.css",
+    "dais.js",
+    "serve.mjs",
+    "themes/",
+    "examples/",
+    "docs/",
+    "AGENTS.md"
+  ],
+  "sideEffects": [
+    "./dais.css",
+    "./dais.js",
+    "./themes/*.css"
+  ],
+  "engines": {
+    "node": ">=20.11.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

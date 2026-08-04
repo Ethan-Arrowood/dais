@@ -39,6 +39,35 @@ print-to-PDF, all **without JavaScript**.
 
 That is a complete, working presentation.
 
+## Install
+
+Dais is distributed as plain files — there is no runtime dependency and nothing
+to compile. Take it from npm:
+
+```
+npm install @arrowood.dev/dais
+```
+
+```html
+<link rel="stylesheet" href="node_modules/@arrowood.dev/dais/dais.css">
+<link rel="stylesheet" href="node_modules/@arrowood.dev/dais/themes/midnight.css">
+<script src="node_modules/@arrowood.dev/dais/dais.js" defer></script>
+```
+
+Bundlers and import maps can resolve the same files through the package's
+`exports` (`@arrowood.dev/dais/dais.css`, `.../themes/midnight.css`, …).
+
+Or just **copy `dais.css` into your project and commit it.** A deck you present
+next year should not depend on a package resolving next year — vendoring is a
+first-class way to use Dais, not a workaround.
+
+Either way, `dais-serve` gives you a local preview of whatever directory you
+run it in:
+
+```
+npx dais-serve      # -> http://localhost:4321
+```
+
 ## Try it
 
 Open any of the examples straight from disk — no server, no build:
@@ -53,8 +82,7 @@ Open any of the examples straight from disk — no server, no build:
   a restrained dark deck for technical talks, with syntax-highlighted code,
   line callouts, a benchmark table, and the presenter timer
 
-Or serve the directory and browse from a landing page. There is nothing to
-install — it's static files:
+Or serve the directory and browse from a landing page:
 
 ```
 node serve.mjs      # -> http://localhost:4321
@@ -88,7 +116,7 @@ themes/fantasy.css  drop-in theme: dragons & castles
 themes/spooky.css   drop-in theme: Halloween
 examples/           four complete decks
 index.html          landing page linking the examples and docs
-serve.mjs           zero-dependency static server for local preview
+serve.mjs           zero-dependency static server (also the dais-serve bin)
 docs/               human documentation (start with authoring.md)
 AGENTS.md           condensed rules for AI coding agents
 DESIGN.md           research notes and architectural rationale

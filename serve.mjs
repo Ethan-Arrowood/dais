@@ -1,12 +1,16 @@
-// Zero-dependency static file server for previewing Dais decks.
-// Dual-stack (IPv4 + IPv6) so `localhost` resolves either way.
-//   node serve.mjs [port]
+#!/usr/bin/env node
+// Zero-dependency static file server for previewing Dais decks. Serves the
+// current directory; dual-stack (IPv4 + IPv6) so `localhost` resolves either
+// way. Not hardened for anything but localhost authoring.
+//
+//   node serve.mjs [port]      from a checkout
+//   npx dais-serve [port]      from a directory containing your deck
 import { createServer } from "node:http";
 import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
-import { extname, join, normalize, resolve } from "node:path";
+import { extname, join, normalize, resolve, sep } from "node:path";
 
-const root = resolve(import.meta.dirname);
+const root = resolve(process.cwd());
 const port = Number(process.argv[2]) || 4321;
 
 const TYPES = {
@@ -32,8 +36,9 @@ createServer(async (req, res) => {
   const url = new URL(req.url, "http://localhost");
   let path = join(root, normalize(decodeURIComponent(url.pathname)));
 
-  // Never serve outside the repo.
-  if (!path.startsWith(root)) {
+  // Never serve outside the served directory. Compare against root + sep so a
+  // sibling like "/srv-evil" can't pass a prefix check against "/srv".
+  if (path !== root && !path.startsWith(root + sep)) {
     res.writeHead(403).end("Forbidden");
     return;
   }

@@ -144,7 +144,11 @@ ghosts) to prove the token surface is expressive enough for decoration.
 
 ## Non-goals (for the prototype)
 
-- Markdown/MDX authoring pipeline, build tooling, npm packaging
+- Markdown/MDX authoring pipeline, build tooling. The package is published to
+  npm as `@arrowood.dev/dais`, but only as *file distribution* — an `exports`
+  map over the same CSS and JS you would copy in by hand, plus a `dais-serve`
+  bin for local preview. There is no build step on either side, and vendoring
+  the files remains fully supported.
 - Presenter view with synced second window (requires nontrivial JS)
 - Vertical/nested slide stacks
 - Broad browser-compat fallbacks beyond the graceful-degradation table above
