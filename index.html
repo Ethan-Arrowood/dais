@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dais — example decks</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #fdfdfc;
+      --text: #1d232b;
+      --muted: #5b6572;
+      --surface: #f1f2f4;
+      --accent: #2451b2;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #14161a;
+        --text: #e8eaed;
+        --muted: #9aa4b2;
+        --surface: #1e2229;
+        --accent: #8ab4ff;
+      }
+    }
+
+    body {
+      margin: 0 auto;
+      max-width: 46rem;
+      padding: 4rem 1.5rem;
+      background: var(--bg);
+      color: var(--text);
+      font: 1rem/1.6 system-ui, "Segoe UI", Roboto, sans-serif;
+    }
+
+    h1 {
+      margin: 0 0 0.25em;
+      font-size: 2.6rem;
+      letter-spacing: -0.02em;
+      color: var(--accent);
+    }
+
+    h2 {
+      margin: 2.5rem 0 0.75rem;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+
+    .lede {
+      margin: 0;
+      font-size: 1.15rem;
+      color: var(--muted);
+    }
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    a.deck {
+      display: block;
+      padding: 1rem 1.25rem;
+      background: var(--surface);
+      border-radius: 0.5rem;
+      color: inherit;
+      text-decoration: none;
+      border: 1px solid transparent;
+    }
+
+    a.deck:hover,
+    a.deck:focus-visible {
+      border-color: var(--accent);
+    }
+
+    a.deck strong {
+      display: block;
+      font-size: 1.15rem;
+      color: var(--accent);
+    }
+
+    a.deck span {
+      color: var(--muted);
+    }
+
+    .docs a {
+      color: var(--accent);
+    }
+
+    code {
+      background: var(--surface);
+      padding: 0.1em 0.35em;
+      border-radius: 0.25em;
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Dais</h1>
+  <p class="lede">Slides are just a web page. One stylesheet, no build step, no
+  required JavaScript.</p>
+
+  <h2>Example decks</h2>
+  <ul>
+    <li><a class="deck" href="examples/default.html">
+      <strong>Presenting with Dais</strong>
+      <span>The kitchen sink — a self-documenting tour of every feature, in the default theme.</span>
+    </a></li>
+    <li><a class="deck" href="examples/fantasy.html">
+      <strong>🏰 Fantasy theme</strong>
+      <span>Parchment, gold, dragons and castles.</span>
+    </a></li>
+    <li><a class="deck" href="examples/midnight.html">
+      <strong>Midnight theme</strong>
+      <span>A restrained dark deck for technical talks — syntax-highlighted code, line callouts, a benchmark table, and the presenter timer.</span>
+    </a></li>
+    <li><a class="deck" href="examples/spooky.html">
+      <strong>👻 Spooky theme</strong>
+      <span>Midnight purple, pumpkin orange, one tasteful cobweb.</span>
+    </a></li>
+  </ul>
+
+  <h2>Documentation</h2>
+  <ul class="docs">
+    <li><a href="docs/authoring.md">authoring.md</a> — writing a deck</li>
+    <li><a href="docs/theming.md">theming.md</a> — tokens and themes</li>
+    <li><a href="docs/reference.md">reference.md</a> — every class and property</li>
+    <li><a href="docs/accessibility.md">accessibility.md</a> — what's handled, what's yours</li>
+  </ul>
+
+  <h2>Presenting</h2>
+  <p><kbd>←</kbd>/<kbd>→</kbd> or <kbd>Space</kbd> to navigate, <kbd>O</kbd> for
+  the overview grid, <kbd>S</kbd> for speaker notes, <kbd>T</kbd> to pause the
+  presenter timer, <code>⌘P</code> to export a PDF.</p>
+
+</body>
+</html>

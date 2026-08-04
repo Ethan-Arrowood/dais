@@ -49,9 +49,13 @@ The framework can't write your content. The checklist:
 3. **Meaningful `id`s** (`#pricing`, not `#slide-7`) — they're your public
    deep-link API.
 4. **Real lists for lists**, real `<blockquote>` for quotes, `<figure>` +
-   `<figcaption>` for captioned media, `<table>` for tabular data.
+   `<figcaption>` for captioned media, `<table>` for tabular data. Tables need
+   a real `<thead>` with `<th>` cells (add `scope="row"` on row headers), and a
+   `<caption>` saying what the numbers are.
 5. **Don't rely on color alone** to distinguish series/states on charts and
-   diagrams; projectors and color-blindness both erase hue distinctions.
+   diagrams; projectors and color-blindness both erase hue distinctions. This
+   includes code: `.tok-*` syntax colors, and the `.line.add` / `.line.del`
+   diff washes, are presentation — say out loud which line changed.
 6. **Link text** that names the destination — the deck doubles as a shareable
    document, where "click here" ages badly.
 7. **Videos**: captions if there's speech; avoid autoplay with sound.

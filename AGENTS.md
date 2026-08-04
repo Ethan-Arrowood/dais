@@ -37,19 +37,21 @@ Hard rules:
 - Valid, semantic HTML5: real `<ul>`/`<ol>` for lists, `<blockquote>` (+
   inner `<footer>` for attribution) on quote slides, `<figure>`/`<figcaption>`
   for captioned media, `alt` on every `<img>` (empty `alt=""` only if purely
-  decorative).
+  decorative), `<table>` with `<thead>`/`<th>` and a `<caption>` for data.
 - `<aside class="notes">` goes LAST inside its slide.
 - Do not add wrapper divs around slides or between `main.dais` and sections.
 - Do not write inline `<script>` in slides unless the user asks for an
   interactive demo; the framework needs none.
 
-Recommended boilerplate before `main.dais` (include unless told otherwise):
+Recommended boilerplate before `main.dais` (include unless told otherwise).
+Set `data-dais-limit` to the talk's length in minutes if it is known:
 
 ```html
 <nav class="dais-controls" aria-label="Presentation controls">
   <label><input type="checkbox" class="dais-overview-toggle"> Overview</label>
   <label><input type="checkbox" class="dais-notes-toggle"> Notes</label>
   <output class="dais-counter"></output>
+  <output class="dais-timer" data-dais-limit="30"></output>
 </nav>
 <div class="dais-progress" aria-hidden="true"></div>
 ```
@@ -59,9 +61,13 @@ Recommended boilerplate before `main.dais` (include unless told otherwise):
 Section templates: `title` `divider` `quote` `media-full` `center` `no-number`
 In-slide layout: `cols` (with `style="--cols: N"`) `stack` `center` `spacer` `card`
 Type: `fit` `muted` `small` `accent` `accent-2`
+Tables: `num` (on `th`/`td` → right-align a numeric column)
+Code: `line` (one code line inside `pre`) + `hl` `dim` `add` `del`;
+`tok-comment` `tok-keyword` `tok-string` `tok-number` `tok-fn` `tok-type`
+`tok-punct` (author-time syntax colors — Dais never highlights at runtime)
 Behavior: `reveal` (on a list/container → children appear sequentially)
 Chrome: `dais-controls` `dais-overview-toggle` `dais-notes-toggle`
-`dais-counter` `dais-progress`
+`dais-counter` `dais-timer` `dais-progress`
 
 Anything else → write plain CSS in a `<style>` block after the framework
 links, scoped to slide `id`s.
@@ -71,8 +77,10 @@ links, scoped to slide `id`s.
 - Customize via tokens first: override `--dais-bg --dais-text --dais-accent
   --dais-accent-2 --dais-surface --dais-muted --dais-stage --dais-code-bg
   --dais-code-text --dais-font --dais-font-display --dais-font-mono
-  --dais-radius --dais-aspect --dais-slide-padding --dais-reveal-step` on
-  `:root`.
+  --dais-radius --dais-aspect --dais-slide-padding --dais-reveal-step
+  --dais-code-size --dais-page-height --dais-tok-comment --dais-tok-keyword
+  --dais-tok-string --dais-tok-number --dais-tok-fn --dais-tok-type
+  --dais-tok-punct` on `:root`.
 - Inside slides use `cqi` for font sizes (1cqi = 1% slide width; body text is
   2.4cqi, h2 4.6cqi), `em`/`%` for spacing. NEVER `px`/`vw`/`vh` for slide
   content — it breaks overview mode and print scaling.
@@ -90,6 +98,8 @@ links, scoped to slide `id`s.
 
 - One idea per slide; target ≤ 6 bullets, ≤ ~12 words each. Prefer another
   slide over a denser slide.
+- Tables: ≤ ~5 rows and ≤ 4 columns. Code blocks: ≤ ~10 lines; shrink with
+  `--dais-code-size` rather than letting a block scroll.
 - Never encode information only in a reveal animation, only in color, or
   only in an image without alt text — content must survive print, no-JS,
   no-CSS, and screen readers.

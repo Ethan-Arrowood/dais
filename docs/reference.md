@@ -18,7 +18,8 @@ body
 nav.dais-controls[aria-label]             fixed control cluster (top-right)
 ├── label > input[type=checkbox].dais-overview-toggle
 ├── label > input[type=checkbox].dais-notes-toggle
-└── output.dais-counter                   filled with "n / N" by dais.js
+├── output.dais-counter                   filled with "n / N" by dais.js
+└── output.dais-timer[data-dais-limit]    presenter clock, driven by dais.js
 
 div.dais-progress[aria-hidden=true]       scroll-driven progress bar
 section > aside.notes                     speaker notes (one per slide, last child)
@@ -47,6 +48,10 @@ body.dais-print-notes                     include notes when printing
 | `center` | Center a region's content |
 | `spacer` | Flexible filler; pushes following content to the slide bottom |
 | `card` | Surface-colored rounded panel |
+| `num` (on `<th>`/`<td>`) | Right-align a numeric column |
+| `line` (in `<pre>`) | One code line; combine with `hl`, `dim`, `add`, `del` |
+| `hl` / `dim` / `add` / `del` | Call out / recede / diff-add / diff-remove |
+| `tok-comment` `tok-keyword` `tok-string` `tok-number` `tok-fn` `tok-type` `tok-punct` | Syntax colors; author-time only, never applied at runtime |
 | `fit` | Giant statement type (8cqi, bold) |
 | `muted` / `small` / `accent` / `accent-2` | Type color/size helpers |
 | `notes` (on `<aside>`) | Speaker notes; hidden unless notes mode / printing with `dais-print-notes` |
@@ -65,12 +70,21 @@ body.dais-print-notes                     include notes when printing
 | `--dais-accent-2` | `#b23524` | strong, mark, highlights |
 | `--dais-code-bg` | `#14161a` | `<pre>` background |
 | `--dais-code-text` | `#e8eaed` | `<pre>` text |
+| `--dais-tok-comment` | `#8792a2` | `.tok-comment` |
+| `--dais-tok-keyword` | `#c792ea` | `.tok-keyword` |
+| `--dais-tok-string` | `#a5d6a7` | `.tok-string` |
+| `--dais-tok-number` | `#f2a071` | `.tok-number` |
+| `--dais-tok-fn` | `#82aaff` | `.tok-fn` |
+| `--dais-tok-type` | `#7fdbca` | `.tok-type` |
+| `--dais-tok-punct` | `#99a3b3` | `.tok-punct` |
 | `--dais-font` | system-ui stack | Body |
 | `--dais-font-display` | `var(--dais-font)` | h1–h3 |
 | `--dais-font-mono` | ui-monospace stack | code, kbd |
 | `--dais-radius` | `0.5cqi` | Corners |
 | `--dais-slide-padding` | `5% 7%` | Slide inset (% = width-relative) |
 | `--dais-reveal-step` | `0.35s` | Reveal stagger; settable per `.reveal` element |
+| `--dais-code-size` | `0.72em` | `<pre>` size; settable per block |
+| `--dais-page-height` | `180mm` | Printed page height; width = height x `--dais-aspect` |
 | `--cols` | `2` | Column count for `.cols`; set inline |
 
 ## Type scale (all width-relative)
@@ -82,7 +96,8 @@ body.dais-print-notes                     include notes when printing
 | `h3` | 3cqi |
 | body | 2.4cqi |
 | `.fit` | 8cqi |
-| `pre` | 0.72em of context |
+| `pre` | `--dais-code-size` (0.72em of context) |
+| `table` | 0.85em of context |
 | `.small` | 0.7em of context |
 | notes overlay | 1.8cqi |
 | slide number | 1.4cqi |
@@ -97,6 +112,7 @@ body.dais-print-notes                     include notes when printing
 | same keys + <kbd>Space</kbd>, from anywhere | dais.js | previous/next/first/last |
 | <kbd>O</kbd> | dais.js + controls | toggle overview |
 | <kbd>S</kbd> | dais.js + controls | toggle notes |
+| <kbd>T</kbd> | dais.js + `.dais-timer` | pause / resume the presenter timer |
 | <kbd>Esc</kbd> | dais.js + controls | exit overview |
 
 ## Reveal semantics
@@ -123,4 +139,7 @@ names, the `--dais-scroller` timeline, the `--dais` anchor name, counter
 3. Honors an incoming `#hash` on load; keeps the hash updated on scroll via
    `history.replaceState` (no history spam).
 4. Fills `.dais-counter` with `n / N`.
-5. In overview: click a slide to close overview and jump to it.
+5. Runs `.dais-timer`: auto-starts on the first move off slide 1, <kbd>T</kbd>
+   or click toggles, `data-dais-limit="<minutes>"` adds `.is-warn` at 80% and
+   `.is-over` at 100%. Reload resets it.
+6. In overview: click a slide to close overview and jump to it.
