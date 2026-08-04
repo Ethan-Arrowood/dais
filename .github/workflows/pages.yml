@@ -1,0 +1,89 @@
+name: Deploy demo to GitHub Pages
+
+# The demo is the repo's static files, so there is nothing to build — the job
+# only stages the subset worth publishing and hands it to Pages.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - index.html
+      - dais.css
+      - dais.js
+      - themes/**
+      - examples/**
+      - .github/workflows/pages.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never let two deploys race; queue instead of cancelling, so the last push
+# to land is the version that ends up live.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/configure-pages@v5
+
+      - name: Stage the site
+        run: |
+          mkdir -p _site/themes
+          cp index.html dais.css dais.js LICENSE _site/
+          cp themes/*.css _site/themes/
+          cp -R examples _site/examples
+          # Static deploy, no Jekyll — but be explicit about it.
+          touch _site/.nojekyll
+
+      - name: Verify the staged site is complete
+        run: |
+          set -e
+          for f in index.html dais.css dais.js \
+                   themes/midnight.css themes/fantasy.css themes/spooky.css \
+                   examples/default.html examples/midnight.html \
+                   examples/fantasy.html examples/spooky.html; do
+            test -s "_site/$f" || { echo "::error::missing or empty: $f"; exit 1; }
+          done
+          # Every stylesheet and script a deck links must actually be staged.
+          python3 - <<'PY'
+          import re, sys, pathlib
+          root = pathlib.Path("_site")
+          # Skip anything carrying a URI scheme (http:, data:, mailto:) or a
+          # protocol-relative host — only repo-relative paths are ours to check.
+          external = re.compile(r"^(?:[a-z][a-z0-9+.\-]*:|//)", re.I)
+          missing = []
+          for page in sorted(root.rglob("*.html")):
+              for ref in re.findall(r'(?:href|src)="([^"#?]+)"', page.read_text()):
+                  if external.match(ref):
+                      continue
+                  if not (page.parent / ref).resolve().exists():
+                      missing.append(f"{page.relative_to(root)} -> {ref}")
+          if missing:
+              print("::error::broken local references in staged site:")
+              for m in missing:
+                  print(f"  {m}")
+              sys.exit(1)
+          print("all local references resolve")
+          PY
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
