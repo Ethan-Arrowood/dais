@@ -16,7 +16,8 @@ print-to-PDF, all **without JavaScript**.
   <script src="dais.js" defer></script> <!-- optional niceties -->
 </head>
 <body>
-  <main class="dais" aria-label="My talk" tabindex="0">
+  <!-- default is slides only; `dais-dots` adds dots, `dais-arrows` adds edge arrows -->
+  <main class="dais dais-dots dais-arrows" aria-label="My talk" tabindex="0">
 
     <section class="slide title" id="intro">
       <h1>My talk</h1>

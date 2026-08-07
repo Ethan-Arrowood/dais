@@ -14,7 +14,7 @@ HTML file in a browser to view.
 ## Deck contract (MUST follow exactly)
 
 ```html
-<main class="dais" aria-label="{talk title}" tabindex="0">
+<main class="dais dais-dots dais-arrows" aria-label="{talk title}" tabindex="0">
   <section class="slide title" id="{kebab-id}">
     <h1>{talk title}</h1>
     <p>{speaker · event}</p>
@@ -68,6 +68,8 @@ Code: `line` (one code line inside `pre`) + `hl` `dim` `add` `del`;
 Behavior: `reveal` (on a list/container → children appear sequentially)
 Chrome: `dais-controls` `dais-overview-toggle` `dais-notes-toggle`
 `dais-counter` `dais-timer` `dais-progress`
+Deck modifiers (on `<main class="dais">`): `dais-dots` (slide dots),
+`dais-arrows` (prev/next edge arrows) — both opt-in; default is slides only
 
 Anything else → write plain CSS in a `<style>` block after the framework
 links, scoped to slide `id`s.

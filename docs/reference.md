@@ -7,6 +7,7 @@ Terse and complete. Tutorial: [authoring.md](authoring.md).
 ```
 body
 └── main.dais[aria-label][tabindex=0]     the deck (scroll container)
+    (add .dais-dots for slide dots, .dais-arrows for edge arrows)
     └── section.slide[id] (×N)            one per slide, direct children only
         ├── h1 (title slide, exactly one per deck) / h2 (all other slides)
         └── …any HTML…

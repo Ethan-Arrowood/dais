@@ -33,7 +33,8 @@ A deck is one HTML page. The contract is small and strict:
   <!-- optional progress bar -->
   <div class="dais-progress" aria-hidden="true"></div>
 
-  <main class="dais" aria-label="Talk title" tabindex="0">
+  <!-- add `dais-dots` for slide dots, `dais-arrows` for edge arrows -->
+  <main class="dais dais-dots dais-arrows" aria-label="Talk title" tabindex="0">
     <!-- slides go here -->
   </main>
 
@@ -45,7 +46,10 @@ Rules that keep decks semantic and accessible:
 
 - The deck container is a **`<main class="dais">`** with an `aria-label`
   naming the talk and `tabindex="0"` (so keyboard users in every browser can
-  focus the scroller and use arrow keys).
+  focus the scroller and use arrow keys). By default the deck shows only the
+  slides; add **`dais-dots`** for the slide dots along the bottom edge and
+  **`dais-arrows`** for the prev/next edge arrows
+  (`<main class="dais dais-dots dais-arrows">`). Both are pure CSS.
 - Every slide is a **direct child `<section class="slide">`** of the deck.
 - Every slide has an **`id`** (deep links, dots, and hash sync depend on it;
   `dais.js` will generate missing ones, but don't rely on that).
