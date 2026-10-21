@@ -107,6 +107,7 @@ A deck is one HTML page:
 | Feature | Mechanism | Degradation |
 |---|---|---|
 | Incremental reveals | `.reveal` children animate in, staggered, when their slide matches `@container scroll-state(snapped: x)` | Wrapped in `@supports`: unsupported browsers show items immediately. `prefers-reduced-motion` shows instantly. Forced visible in print & overview. |
+| Steps / fragments | `dais.js` tracks a current step per slide (Right/Space advance); toggles `.step-active`/`.step-current` on `.step`/`[data-step]` elements. Hidden state gated on a JS-added `dais-js` class. Print/overview expand each stepped slide into one frozen clone per step. | No JS → no `dais-js` → every step visible (composed final state) in reading order, print, and screen readers. `prefers-reduced-motion` keeps stepping but drops the transition. |
 | Speaker notes | `<aside class="notes">`, hidden; toggled by a checkbox in `.dais-controls` via `body:has(:checked)` | Visible in the no-CSS document reading order; opt-in printing via `dais-print-notes` body class |
 | Overview grid | Checkbox toggle re-lays the deck as a CSS grid; `cqi` typography auto-shrinks each slide | None needed — pure layout change |
 | Print / PDF | `@page { size: 320mm 180mm; margin: 0 }`, one slide per page via `break-after: page` | Standard print CSS |

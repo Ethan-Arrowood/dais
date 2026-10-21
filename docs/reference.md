@@ -39,11 +39,21 @@ body.dais-print-notes                     include notes when printing
 | `center` | Center content both axes |
 | `no-number` | Suppress the slide number |
 
+## Attributes on `<section>`
+
+| Attribute | Effect |
+|---|---|
+| `data-dais-steps="N"` | Declare a stepped slide with `N` steps when no per-element `.step`/`[data-step]` markers carry the count (drive visuals off `--dais-step`) |
+| `data-dais-step="k"` | Written by `dais.js` — the slide's current step (`0` = nothing active); mirror of `--dais-step` for attribute selectors |
+
 ## Classes inside a slide
 
 | Class | Effect |
 |---|---|
 | `reveal` | Direct children appear one by one when the slide snaps in (see below) |
+| `step` | Additive fragment: hidden until its step is reached (via Right/Space), then stays (see Step semantics) |
+| `step-active` / `step-current` | Written by `dais.js` on step elements — order ≤ current / order == current; deck-authored styling hooks |
+| `data-step="k"` (attribute) | Participate in stepping at order `k` with no built-in visual; for stationary elements (e.g. `<tr>`) that only change emphasis |
 | `cols` | Equal-column grid; column count via `--cols` (default 2) |
 | `stack` | Tight vertical flex group |
 | `center` | Center a region's content |
@@ -87,6 +97,7 @@ body.dais-print-notes                     include notes when printing
 | `--dais-code-size` | `0.72em` | `<pre>` size; settable per block |
 | `--dais-page-height` | `180mm` | Printed page height; width = height x `--dais-aspect` |
 | `--cols` | `2` | Column count for `.cols`; set inline |
+| `--dais-step` | `0` | Written by `dais.js` — current step on a stepped section |
 
 ## Type scale (all width-relative)
 
@@ -110,7 +121,7 @@ body.dais-print-notes                     include notes when printing
 | Key | Requires | Action |
 |---|---|---|
 | <kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd> | nothing (deck focused) | native scroll navigation |
-| same keys + <kbd>Space</kbd>, from anywhere | dais.js | previous/next/first/last |
+| same keys + <kbd>Space</kbd>, from anywhere | dais.js | previous/next/first/last; on a stepped slide, <kbd>→</kbd>/<kbd>Space</kbd> advances one step before leaving, <kbd>←</kbd> reverses |
 | <kbd>O</kbd> | dais.js + controls | toggle overview |
 | <kbd>S</kbd> | dais.js + controls | toggle notes |
 | <kbd>T</kbd> | dais.js + `.dais-timer` | pause / resume the presenter timer |
@@ -125,12 +136,38 @@ body.dais-print-notes                     include notes when printing
 - Forced fully visible in: print, overview mode, `prefers-reduced-motion`.
 - Replays on each re-entry of the slide.
 
+## Step semantics
+
+- A slide is stepped when it holds `.step` / `[data-step]` elements, or declares
+  `data-dais-steps="N"`. Step count = the largest order present (explicit
+  `data-step`, else DOM order among step elements), or `N`.
+- <kbd>→</kbd>/<kbd>Space</kbd> advances the current step; only when it passes
+  the last step does it move to the next section. <kbd>←</kbd> reverses; below
+  step 0 it moves to the previous section.
+- `dais.js` sets `--dais-step` / `data-dais-step` on the section, and toggles
+  `.step-active` (order ≤ current) and `.step-current` (order == current) on
+  step elements. `.step` additionally hides until active (built-in visual);
+  `[data-step]` without `.step` gets no built-in visual — style the hooks.
+- Entering a slide forward (or by scroll/jump) opens it at step 0; stepping
+  **back** into a slide opens it fully revealed.
+- Progressive enhancement: the hidden state is gated on the `dais-js` class,
+  which `dais.js` adds only when it runs. Without JS, every step is visible
+  (composed final state) — in the no-CSS reading order, print, and to screen
+  readers. Never encode meaning only in a step.
+- Print & overview: `dais.js` expands each stepped slide into one page /
+  thumbnail per step (frozen clones; the source is hidden while expanded).
+  Without JS, a stepped slide is a single composed page.
+
 ## Framework-reserved internals
 
 Do not restyle/repurpose these: the `dais-slide` and `dais-deck` container
 names, the `--dais-scroller` timeline, the `--dais` anchor name, counter
 `dais-slide`, keyframes `dais-reveal` / `dais-progress-grow`, and
 `section::after` (slide number). Themes decorate with `section::before`.
+Also framework-managed (set by `dais.js`, don't hand-author): the `dais-js`,
+`dais-clone`, and `dais-step-source` classes, and `--dais-step` /
+`data-dais-step`. `.step-active` / `.step-current` are yours to style but not
+to toggle.
 
 ## dais.js behaviors (all optional)
 
@@ -143,4 +180,7 @@ names, the `--dais-scroller` timeline, the `--dais` anchor name, counter
 5. Runs `.dais-timer`: auto-starts on the first move off slide 1, <kbd>T</kbd>
    or click toggles, `data-dais-limit="<minutes>"` adds `.is-warn` at 80% and
    `.is-over` at 100%. Reload resets it.
-6. In overview: click a slide to close overview and jump to it.
+6. In overview: click a slide (or a step clone) to close overview and jump to
+   the underlying section.
+7. Drives stepped slides (see Step semantics): step navigation, and expanding
+   each stepped slide into one page/thumbnail per step for print and overview.

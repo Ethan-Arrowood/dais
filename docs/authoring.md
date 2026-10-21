@@ -213,7 +213,58 @@ appear one by one, automatically, when the slide snaps into view:
   `prefers-reduced-motion` users, print, and overview mode all show every
   item immediately. Never put information in the *animation* itself.
 
-## 4. Speaker notes
+## 4. Stepped slides
+
+Where a reveal plays automatically on arrival, a **step** waits for you.
+<kbd>→</kbd>/<kbd>Space</kbd> advances one step within the slide before moving
+on to the next section; <kbd>←</kbd> reverses. Two flavors, and you can mix them.
+
+**Additive bullets** — reveal one at a time as you talk. Add `class="step"`:
+
+```html
+<ul>
+  <li class="step">First point.</li>
+  <li class="step">Second point — the first stays visible.</li>
+  <li class="step">Third point.</li>
+</ul>
+```
+
+**A stationary table** — show the whole table, then walk a highlight down it
+without the table shifting. Tag the rows with `data-step` (they stay visible;
+only the emphasis moves) and style the hooks in your deck's `<style>`:
+
+```html
+<style>
+  #results tr.step-current { background: color-mix(in srgb, var(--dais-accent) 25%, transparent); }
+  #results tr.step-active:not(.step-current) { color: var(--dais-muted); }
+</style>
+
+<section class="slide" id="results">
+  <h2>Median duration</h2>
+  <table><tbody>
+    <tr data-step="1"><td>1</td><td class="num">9,939</td></tr>
+    <tr data-step="2"><td>2</td><td class="num">5,776</td></tr>
+    <tr data-step="3"><td>4</td><td class="num">3,904</td></tr>
+    <tr data-step="4"><td>7</td><td class="num">3,468</td></tr>
+  </tbody></table>
+</section>
+```
+
+- `dais.js` toggles `.step-current` (the step you're on) and `.step-active`
+  (that step and every earlier one). `.step` also hides itself until active;
+  `[data-step]` alone does not — it's for elements that stay put.
+- Order comes from `data-step`, or from DOM order among `.step` elements. A
+  slide with no per-element markers can still declare a count with
+  `data-dais-steps="N"` and drive visuals off the `--dais-step` property.
+- Entering a slide forward starts at step 0 (nothing revealed); stepping back
+  into it opens it fully revealed.
+- **Print and overview expand each stepped slide into one page/thumbnail per
+  step**, so a handout shows the whole build-up.
+- Degradation, same rule as reveals: **without JavaScript every step is simply
+  visible** (the finished slide), so the deck still reads and prints. Never put
+  information only in a step.
+
+## 5. Speaker notes
 
 Put notes at the end of a slide in an `<aside class="notes">`:
 
@@ -231,7 +282,7 @@ Put notes at the end of a slide in an `<aside class="notes">`:
   published deck. Delete them before publishing if not.
 - To include notes when printing, add `class="dais-print-notes"` to `<body>`.
 
-## 5. Presenting
+## 6. Presenting
 
 | Action | Zero-JS | With dais.js |
 |---|---|---|
@@ -272,14 +323,15 @@ Practical presenting notes:
   fullscreen, your copy with Notes toggled on, and advance both, or print
   the notes view to paper like it's 1997. It rules.
 
-## 6. Printing and PDF export
+## 7. Printing and PDF export
 
 1. Open the print dialog (<kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>P</kbd>).
 2. Destination: **Save as PDF**. Margins: none/default. Background graphics:
    **on** (for themes).
 3. Each slide becomes one page, sized from `--dais-aspect` — 320 × 180 mm at
    the default 16:9, 240 × 180 mm if you set `4 / 3`. Reveal content is fully
-   visible; controls, dots, and the progress bar disappear.
+   visible; a stepped slide expands to one page per step (§4); controls, dots,
+   and the progress bar disappear.
 4. Add `class="dais-print-notes"` to `<body>` to print speaker notes on each
    slide.
 
@@ -289,7 +341,7 @@ derived from it and the aspect ratio, so you never set the two independently.
 Themes may re-tokenize for paper — the spooky theme, for instance, swaps its
 midnight palette for an ink-friendly one under `@media print`.
 
-## 7. Headings on visual slides
+## 8. Headings on visual slides
 
 Every slide needs a heading for the document outline, but some slides are
 visually just an image or a word. Two good options:
@@ -308,7 +360,7 @@ visually just an image or a word. Two good options:
 }
 ```
 
-## 8. Custom styling
+## 9. Custom styling
 
 Dais deliberately covers little. To style one deck, add a `<style>` block (or
 another stylesheet) after the framework and write normal CSS:

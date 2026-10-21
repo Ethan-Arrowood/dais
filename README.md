@@ -3,8 +3,8 @@
 **Slides are just a web page.** Dais is a presentation framework that is one
 CSS file and an HTML convention: write real, semantic HTML, link `dais.css`,
 and you have a PowerPoint-style deck that runs in any modern browser — with
-navigation, incremental reveals, speaker notes, an overview grid, and
-print-to-PDF, all **without JavaScript**.
+navigation, incremental reveals, stepped slides, speaker notes, an overview
+grid, and print-to-PDF, all **without JavaScript**.
 
 ```html
 <!DOCTYPE html>
@@ -98,12 +98,16 @@ node serve.mjs      # -> http://localhost:4321
 | Slide navigation | Scroll snapping: swipe, trackpad, scrollbar, keyboard; pure-CSS arrows & dots | No |
 | Deep links | Every slide has an `id`; `talk.html#that-slide` just works | No |
 | Incremental reveals | `class="reveal"` on a list; items animate in when the slide snaps into view | No |
+| Steps / fragments | `class="step"` or `data-step="k"`; <kbd>→</kbd>/<kbd>Space</kbd> advances within a slide, print/overview expand each step to its own page | Yes¹ |
 | Speaker notes | `<aside class="notes">`, toggled with a checkbox (or press <kbd>S</kbd>) | No |
 | Overview grid | Checkbox toggle (or press <kbd>O</kbd>) re-lays the deck as thumbnails | No |
 | Print / PDF | <kbd>⌘P</kbd> → Save as PDF; one 16:9 page per slide | No |
 | Progress bar | Optional element driven by a scroll timeline | No |
 | Presenter timer | `<output class="dais-timer" data-dais-limit="30">` — auto-starts, warns at 80% of your slot | Yes |
 | Arrow keys from anywhere, `n / N` counter, URL hash sync, click-a-thumbnail | `dais.js` (dependency-free, optional) | Yes |
+
+¹ Steps need `dais.js` to advance; without it, every step is simply visible (the
+composed final slide), so the deck still reads and prints.
 
 Because slides are semantic HTML (`<main>` → `<section>` → headings, lists,
 figures), the deck is also a readable document: with CSS off, in a screen

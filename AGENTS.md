@@ -65,7 +65,9 @@ Tables: `num` (on `th`/`td` → right-align a numeric column)
 Code: `line` (one code line inside `pre`) + `hl` `dim` `add` `del`;
 `tok-comment` `tok-keyword` `tok-string` `tok-number` `tok-fn` `tok-type`
 `tok-punct` (author-time syntax colors — Dais never highlights at runtime)
-Behavior: `reveal` (on a list/container → children appear sequentially)
+Behavior: `reveal` (on a list/container → children appear sequentially);
+`step` (on an element → appears when its step is reached, staying — advance
+with Right/Space) + `step-active`/`step-current` (framework-toggled hooks)
 Chrome: `dais-controls` `dais-overview-toggle` `dais-notes-toggle`
 `dais-counter` `dais-timer` `dais-progress`
 Deck modifiers (on `<main class="dais">`): `dais-dots` (slide dots),
@@ -73,6 +75,26 @@ Deck modifiers (on `<main class="dais">`): `dais-dots` (slide dots),
 
 Anything else → write plain CSS in a `<style>` block after the framework
 links, scoped to slide `id`s.
+
+## Stepped slides (fragments)
+
+Within-slide stepping, driven by `dais.js`. Right/Space advances one step
+before moving to the next section; Left reverses. A slide is stepped when it
+holds step elements or declares `data-dais-steps="N"` on the `<section>`.
+
+- `.step` on an element → **additive fragment**: hidden until its step, then
+  stays. For bullets/callouts revealed one at a time. Auto-ordered in DOM order.
+- `data-step="k"` on an element → participates at order `k` with **no built-in
+  visual**. For stationary elements (e.g. a `<tr>`) that stay put while emphasis
+  moves. `dais.js` toggles `.step-current` (order == current) and `.step-active`
+  (order <= current); style those in the deck's own `<style>`, scoped by slide
+  `id` (e.g. `#results tr.step-current { … }`).
+
+Progressive enhancement: without JS every step is simply visible (the composed
+final state), so the deck still reads, prints, and navigates. `dais.js` expands
+each stepped slide into one page/thumbnail per step for print and overview.
+Never encode meaning ONLY in a step — like reveals, steps must survive no-JS,
+print, and screen readers.
 
 ## Styling rules
 
