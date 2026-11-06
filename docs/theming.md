@@ -29,6 +29,7 @@ ordinary selectors. No classes, attributes, or JS hooks are involved.
 | `--dais-radius` | Corner rounding | `0.5cqi` |
 | `--dais-slide-padding` | Slide inset | `5% 7%` |
 | `--dais-reveal-step` | Delay between reveal items | `0.35s` |
+| `--dais-focus-dim` | Opacity of `.focus` items around the current one | `0.4` |
 | `--dais-code-size` | `<pre>` font size | `0.72em` |
 | `--dais-page-height` | Printed page height (width follows `--dais-aspect`) | `180mm` |
 
@@ -41,11 +42,16 @@ Keep these pairs at **WCAG AA for large text (3:1) or better — aim for
 4.5:1**:
 
 - `--dais-text` on `--dais-bg` (aim ≥ 7:1; it's a projector)
-- `--dais-accent` on `--dais-bg` (headings)
+- `--dais-accent` on `--dais-bg` (headings, and the current `.focus` item)
 - `--dais-bg` on `--dais-accent` (divider slides invert)
 - `--dais-muted` on `--dais-bg` (≥ 4.5:1; it's still content)
 - `--dais-code-text` on `--dais-code-bg`
 - every `--dais-tok-*` on `--dais-code-bg` (they are code, not decoration)
+
+The current `.focus` item is body-size text in `--dais-accent`, so hold that
+pair to 4.5:1. Dimmed `.focus` items fall below these ratios on purpose: they
+recede while another item is in focus, and return to full strength once the
+list's steps are past.
 
 Projectors crush contrast dramatically — if a pairing looks marginal on your
 laptop, it is unreadable on stage.
