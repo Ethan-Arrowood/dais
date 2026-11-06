@@ -217,7 +217,7 @@ appear one by one, automatically, when the slide snaps into view:
 
 Where a reveal plays automatically on arrival, a **step** waits for you.
 <kbd>→</kbd>/<kbd>Space</kbd> advances one step within the slide before moving
-on to the next section; <kbd>←</kbd> reverses. Two flavors, and you can mix them.
+on to the next section; <kbd>←</kbd> reverses. Three flavors, and you can mix them.
 
 **Additive bullets** — reveal one at a time as you talk. Add `class="step"`:
 
@@ -250,19 +250,58 @@ only the emphasis moves) and style the hooks in your deck's `<style>`:
 </section>
 ```
 
+**A focus list**: the whole list shows from the start, and each step puts one
+item in focus. Add `class="focus"` to the container; its direct children
+become steps in DOM order, with no `data-step` to write:
+
+```html
+<ul class="focus">
+  <li>Slow feedback loop</li>
+  <li>Flaky shared fixtures</li>
+  <li>No parallelism</li>
+</ul>
+<p class="step">So we rebuilt the harness.</p>
+```
+
+- The current item takes the accent color; the others dim to
+  `--dais-focus-dim` (default `0.4`). Set it per deck on `:root`, or per
+  list inline: `<ul class="focus" style="--dais-focus-dim: 0.25">`.
+- Dimming needs a current item. Before the list's first step, and once a later
+  step on the slide is reached (the trailing `.step` above), every item is back
+  at full strength. If the list is the slide's last step, it ends with the
+  final item in focus; add a trailing `.step`, or set `data-dais-steps` one
+  higher, to end on the full list.
+- Put `focus` on the element whose direct children are the items: the `<ul>`
+  or `<ol>`, a `<tbody>` for rows, or a `.cols` grid for cards.
+- Children number in sequence with the other step elements on the slide, so
+  a `.step` before the list comes first and one after it comes last. An
+  explicit `data-step` on a child still wins.
+- Add `class="step"` to the children as well to reveal them one at a time:
+  each new item arrives in focus and the earlier ones dim.
+
+For all three flavors:
+
 - `dais.js` toggles `.step-current` (the step you're on) and `.step-active`
   (that step and every earlier one). `.step` also hides itself until active;
   `[data-step]` alone does not — it's for elements that stay put.
-- Order comes from `data-step`, or from DOM order among `.step` elements. A
-  slide with no per-element markers can still declare a count with
-  `data-dais-steps="N"` and drive visuals off the `--dais-step` property.
+- Order comes from `data-step`, or from DOM order among step elements
+  (`.step`, `[data-step]`, and `.focus` children). A slide with no
+  per-element markers can still declare a count with `data-dais-steps="N"`
+  and drive visuals off the `--dais-step` property.
 - Entering a slide forward starts at step 0 (nothing revealed); stepping back
   into it opens it fully revealed.
 - **Print and overview expand each stepped slide into one page/thumbnail per
   step**, so a handout shows the whole build-up.
 - Degradation, same rule as reveals: **without JavaScript every step is simply
-  visible** (the finished slide), so the deck still reads and prints. Never put
-  information only in a step.
+  visible** (the finished slide) and no `.focus` item dims, so the deck still
+  reads and prints. Never put information only in a step.
+
+**Which one?** Use `.reveal` for a list you will not talk through item by
+item; it plays on arrival with no keypress. Use `.step` when the next point
+should stay hidden until you get to it, such as a punchline. Use `.focus` when
+you talk through a list point by point and the audience benefits from seeing
+the whole list as you go. For emphasis that `.focus` does not cover (say, a
+background on the current table row), use `data-step` and style the hooks.
 
 ## 5. Speaker notes
 

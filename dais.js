@@ -65,17 +65,20 @@
   };
 
   // --- Steps (fragments) ----------------------------------------------------
-  // A slide is "stepped" when it holds .step / [data-step] elements, or
-  // declares data-dais-steps="N". Right/Space advances one step before moving
-  // to the next section; Left reverses. Each step element has an integer order
-  // (explicit data-step, else its position among the step elements); advancing
-  // toggles .step-active (order <= current) and .step-current (order ==
-  // current), and .step also hides until active (dais.css). Current step lives
-  // on the section as --dais-step / [data-dais-step]; 0 means nothing active.
+  // A slide is "stepped" when it holds .step / [data-step] elements or a
+  // .focus group (whose direct children are steps), or declares
+  // data-dais-steps="N". Right/Space advances one step before moving to the
+  // next section; Left reverses. Each step element has an integer order
+  // (explicit data-step, else its DOM position among the step elements, so a
+  // .focus group's children number in sequence with any .step around them);
+  // advancing toggles .step-active (order <= current) and .step-current (order
+  // == current). .step also hides until active, and .focus dims the siblings
+  // of its current child (dais.css). Current step lives on the section as
+  // --dais-step / [data-dais-step]; 0 means nothing active.
   const stepData = new Map();
 
   const stepItems = (root) =>
-    [...root.querySelectorAll(".step, [data-step]")].map((el, i) => {
+    [...root.querySelectorAll(".step, [data-step], .focus > *")].map((el, i) => {
       const explicit = Number(el.dataset.step);
       const order = Number.isFinite(explicit) && explicit > 0 ? explicit : i + 1;
       return { el, order };

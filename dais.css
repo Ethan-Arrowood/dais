@@ -54,6 +54,7 @@
   --dais-radius: 0.5cqi;
   --dais-slide-padding: 5% 7%;
   --dais-reveal-step: 0.35s;     /* stagger between incremental reveal items */
+  --dais-focus-dim: 0.4;         /* opacity of .focus items around the current one */
   --dais-code-size: 0.72em;      /* <pre> size; shrink for long snippets */
 
   /* Printed page height; the width is derived from --dais-aspect. */
@@ -645,8 +646,8 @@ body {
  *
  * Within-slide stepping, driven by dais.js. Right/Space advances one step
  * at a time before moving to the next section; Left reverses. A slide is
- * "stepped" when it contains .step / [data-step] elements or declares
- * data-dais-steps="N".
+ * "stepped" when it contains .step / [data-step] elements or a .focus group,
+ * or declares data-dais-steps="N".
  *
  *   .step        additive fragment — hidden until its step is reached, then
  *                stays (a built-in reveal-on-step, for bullets/callouts).
@@ -654,6 +655,10 @@ body {
  *                visual — for stationary elements (e.g. a <tr>) that stay put
  *                and only change emphasis. The deck styles .step-current /
  *                .step-active itself.
+ *   .focus       on a container: its direct children are stationary steps
+ *                with a built-in visual. The current child takes the accent
+ *                color and its siblings dim to --dais-focus-dim. With no
+ *                current child, nothing dims.
  *
  * dais.js reflects state on the section (--dais-step / [data-dais-step]) and
  * toggles .step-active (order <= current) and .step-current (order == current)
@@ -678,11 +683,37 @@ body {
   }
 }
 
+/* .focus: every child stays visible; each step spotlights one and dims the
+   rest. The dim keys off a current child, so before the group's first step
+   and after its last (a later step elsewhere on the slide) it returns to full
+   strength on its own. .step children keep the .step transition. */
+.dais.dais-js .focus > :not(.step) {
+  transition: opacity 0.25s ease-out, color 0.25s ease-out;
+}
+
+.dais.dais-js .focus:has(> .step-current) > :not(.step-current) {
+  opacity: var(--dais-focus-dim);
+}
+
+.dais.dais-js .focus > .step-current {
+  color: var(--dais-accent);
+}
+
+/* A .focus child that is also a .step stays hidden until active instead of
+   dimming, so the two compose into "reveal, then focus". Same specificity as
+   the dim rule and later in source order, under the same gate as .step. */
+@supports (container-type: scroll-state) {
+  .dais.dais-js .focus > .step:not(.step-active) {
+    opacity: 0;
+  }
+}
+
 /* Stepping is user-driven content, not ambient motion, so it stays on under
    reduced motion — but without the transition. (This differs from .reveal,
    which force-shows.) */
 @media (prefers-reduced-motion: reduce) {
-  .dais.dais-js .step {
+  .dais.dais-js .step,
+  .dais.dais-js .focus > :not(.step) {
     transition: none;
   }
 }

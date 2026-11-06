@@ -30,6 +30,10 @@ audience sees.
   in full immediately. Reveals also never gate information behind interaction
   — the full content is always in the DOM, visible to assistive tech, print,
   and non-supporting browsers.
+- **Focus lists only dim.** `.focus` lowers the opacity of the items around
+  the current one. Nothing is hidden or reordered, so assistive tech and the
+  no-JS reading order get the whole list, and the current item is marked by
+  both color and contrast, not hue alone.
 - **Contrast-safe defaults.** Default and bundled theme palettes keep body
   text near or above 7:1 and all meaningful pairs above 4.5:1 (see
   [theming.md](theming.md) for the pairs to check when you retheme).
