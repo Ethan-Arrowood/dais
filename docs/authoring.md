@@ -268,9 +268,8 @@ children become steps in DOM order, with no `data-step` to write:
   list inline: `<ul class="spotlight" style="--dais-spotlight-dim: 0.25">`.
 - Dimming needs a current item. Before the list's first step, and once a later
   step on the slide is reached (the trailing `.step` above), every item is back
-  at full strength. If the list is the slide's last step, it ends with the final
-  item in the spotlight; add a trailing `.step`, or set `data-dais-steps` one
-  higher, to end on the full list.
+  at full strength. If the list holds the slide's last step, Dais adds one more
+  step after it, so the final press shows the whole list before the next slide.
 - Put `spotlight` on the element whose direct children are the items: the
   `<ul>` or `<ol>`, a `<tbody>` for rows, or a `.cols` grid for cards.
 - Children number in sequence with the other step elements on the slide, so

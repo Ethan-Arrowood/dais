@@ -144,7 +144,8 @@ body.dais-print-notes                     include notes when printing
   `.spotlight` container, or declares `data-dais-steps="N"`. Step elements are
   `.step`, `[data-step]`, and every direct child of a `.spotlight`. Step count =
   the largest order present (explicit `data-step`, else DOM order among step
-  elements), or `N`.
+  elements), or `N`. When a `.spotlight` child holds the largest order, the
+  count is one higher, so the final step shows the whole list again.
 - <kbd>→</kbd>/<kbd>Space</kbd> advances the current step; only when it passes
   the last step does it move to the next section. <kbd>←</kbd> reverses; below
   step 0 it moves to the previous section.

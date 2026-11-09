@@ -96,8 +96,8 @@ holds step elements or declares `data-dais-steps="N"` on the `<section>`.
   (explicit `data-step` wins). The current child takes the accent color; its
   siblings dim to `--dais-spotlight-dim` (0.4). Before and after the group's
   steps, nothing dims. Prefer it over `.step` bullets when the audience should
-  see the whole list. Put a trailing `.step` after the list to end the slide on
-  the full list.
+  see the whole list. When the group holds the slide's last step, `dais.js`
+  adds one more step that shows the full list before the slide advances.
 
 Progressive enhancement: without JS every step is simply visible (the composed
 final state), so the deck still reads, prints, and navigates. `dais.js` expands

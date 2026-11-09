@@ -103,7 +103,13 @@
   slides.forEach((section) => {
     const items = stepItems(section);
     const declared = Number(section.dataset.daisSteps);
-    const n = Math.max(declared > 0 ? declared : 0, ...items.map((it) => it.order), 0);
+    const last = Math.max(0, ...items.map((it) => it.order));
+    // A .spotlight holding the slide's last step gets one more step, so the
+    // final press shows the whole list again before the slide advances.
+    const endsOnSpotlight = items.some(
+      ({ el, order }) => order === last && el.parentElement.matches(".spotlight"),
+    );
+    const n = Math.max(declared > 0 ? declared : 0, last + (endsOnSpotlight ? 1 : 0));
     if (n > 0) {
       stepData.set(section, { n, cur: 0, items });
       applyStep(section, 0);
