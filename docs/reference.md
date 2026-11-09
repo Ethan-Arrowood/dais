@@ -43,7 +43,7 @@ body.dais-print-notes                     include notes when printing
 
 | Attribute | Effect |
 |---|---|
-| `data-dais-steps="N"` | Declare a stepped slide with `N` steps when no per-element `.step`/`[data-step]`/`.focus` markers carry the count (drive visuals off `--dais-step`) |
+| `data-dais-steps="N"` | Declare a stepped slide with `N` steps when no per-element `.step`/`[data-step]`/`.spotlight` markers carry the count (drive visuals off `--dais-step`) |
 | `data-dais-step="k"` | Written by `dais.js` — the slide's current step (`0` = nothing active); mirror of `--dais-step` for attribute selectors |
 
 ## Classes inside a slide
@@ -54,7 +54,7 @@ body.dais-print-notes                     include notes when printing
 | `step` | Additive fragment: hidden until its step is reached (via Right/Space), then stays (see Step semantics) |
 | `step-active` / `step-current` | Written by `dais.js` on step elements — order ≤ current / order == current; deck-authored styling hooks |
 | `data-step="k"` (attribute) | Participate in stepping at order `k` with no built-in visual; for stationary elements (e.g. `<tr>`) that only change emphasis |
-| `focus` | Direct children are stationary steps: the current one takes the accent color, its siblings dim to `--dais-focus-dim` (see Step semantics) |
+| `spotlight` | Direct children are stationary steps: the current one takes the accent color, its siblings dim to `--dais-spotlight-dim` (see Step semantics) |
 | `cols` | Equal-column grid; column count via `--cols` (default 2) |
 | `stack` | Tight vertical flex group |
 | `center` | Center a region's content |
@@ -95,7 +95,7 @@ body.dais-print-notes                     include notes when printing
 | `--dais-radius` | `0.5cqi` | Corners |
 | `--dais-slide-padding` | `5% 7%` | Slide inset (% = width-relative) |
 | `--dais-reveal-step` | `0.35s` | Reveal stagger; settable per `.reveal` element |
-| `--dais-focus-dim` | `0.4` | Opacity of `.focus` children around the current one; settable per `.focus` element |
+| `--dais-spotlight-dim` | `0.4` | Opacity of `.spotlight` children around the current one; settable per `.spotlight` element |
 | `--dais-code-size` | `0.72em` | `<pre>` size; settable per block |
 | `--dais-page-height` | `180mm` | Printed page height; width = height x `--dais-aspect` |
 | `--cols` | `2` | Column count for `.cols`; set inline |
@@ -141,8 +141,8 @@ body.dais-print-notes                     include notes when printing
 ## Step semantics
 
 - A slide is stepped when it holds `.step` / `[data-step]` elements or a
-  `.focus` container, or declares `data-dais-steps="N"`. Step elements are
-  `.step`, `[data-step]`, and every direct child of a `.focus`. Step count =
+  `.spotlight` container, or declares `data-dais-steps="N"`. Step elements are
+  `.step`, `[data-step]`, and every direct child of a `.spotlight`. Step count =
   the largest order present (explicit `data-step`, else DOM order among step
   elements), or `N`.
 - <kbd>→</kbd>/<kbd>Space</kbd> advances the current step; only when it passes
@@ -152,12 +152,12 @@ body.dais-print-notes                     include notes when printing
   `.step-active` (order ≤ current) and `.step-current` (order == current) on
   step elements. `.step` additionally hides until active (built-in visual);
   `[data-step]` without `.step` gets no built-in visual — style the hooks.
-- `.focus`: while one of its direct children is `.step-current`, that child
-  takes `--dais-accent` and its siblings take `opacity: var(--dais-focus-dim)`.
-  With no current child (step 0, or a later step elsewhere on the slide),
-  nothing dims. A `.step` child that is not yet active stays hidden rather than
-  dimmed. Opacity and color transition over 0.25s, except under
-  `prefers-reduced-motion`.
+- `.spotlight`: while one of its direct children is `.step-current`, that child
+  takes `--dais-accent` and its siblings take
+  `opacity: var(--dais-spotlight-dim)`. With no current child (step 0, or a
+  later step elsewhere on the slide), nothing dims. A `.step` child that is not yet active
+  stays hidden rather than dimmed. Opacity and color transition over 0.25s,
+  except under `prefers-reduced-motion`.
 - Entering a slide forward (or by scroll/jump) opens it at step 0; stepping
   **back** into a slide opens it fully revealed.
 - Progressive enhancement: the hidden state is gated on the `dais-js` class,

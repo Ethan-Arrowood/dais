@@ -68,7 +68,7 @@ Code: `line` (one code line inside `pre`) + `hl` `dim` `add` `del`;
 Behavior: `reveal` (on a list/container → children appear sequentially);
 `step` (on an element → appears when its step is reached, staying — advance
 with Right/Space) + `step-active`/`step-current` (framework-toggled hooks);
-`focus` (on a list/container → children stay visible, each step highlights
+`spotlight` (on a list/container → children stay visible, each step highlights
 one and dims the rest)
 Chrome: `dais-controls` `dais-overview-toggle` `dais-notes-toggle`
 `dais-counter` `dais-timer` `dais-progress`
@@ -91,12 +91,13 @@ holds step elements or declares `data-dais-steps="N"` on the `<section>`.
   moves. `dais.js` toggles `.step-current` (order == current) and `.step-active`
   (order <= current); style those in the deck's own `<style>`, scoped by slide
   `id` (e.g. `#results tr.step-current { … }`).
-- `class="focus"` on a container → its **direct children are stationary steps**,
-  auto-ordered in DOM order with the slide's other step elements (explicit
-  `data-step` wins). The current child takes the accent color; its siblings dim
-  to `--dais-focus-dim` (0.4). Before and after the group's steps, nothing dims.
-  Prefer it over `.step` bullets when the audience should see the whole list.
-  Put a trailing `.step` after the list to end the slide on the full list.
+- `class="spotlight"` on a container → its **direct children are stationary
+  steps**, auto-ordered in DOM order with the slide's other step elements
+  (explicit `data-step` wins). The current child takes the accent color; its
+  siblings dim to `--dais-spotlight-dim` (0.4). Before and after the group's
+  steps, nothing dims. Prefer it over `.step` bullets when the audience should
+  see the whole list. Put a trailing `.step` after the list to end the slide on
+  the full list.
 
 Progressive enhancement: without JS every step is simply visible (the composed
 final state), so the deck still reads, prints, and navigates. `dais.js` expands
@@ -110,7 +111,7 @@ print, and screen readers.
   --dais-accent-2 --dais-surface --dais-muted --dais-stage --dais-code-bg
   --dais-code-text --dais-font --dais-font-display --dais-font-mono
   --dais-radius --dais-aspect --dais-slide-padding --dais-reveal-step
-  --dais-focus-dim --dais-code-size --dais-page-height --dais-tok-comment
+  --dais-spotlight-dim --dais-code-size --dais-page-height --dais-tok-comment
   --dais-tok-keyword --dais-tok-string --dais-tok-number --dais-tok-fn
   --dais-tok-type --dais-tok-punct` on `:root`.
 - Inside slides use `cqi` for font sizes (1cqi = 1% slide width; body text is
