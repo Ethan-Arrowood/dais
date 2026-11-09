@@ -98,7 +98,7 @@ node serve.mjs      # -> http://localhost:4321
 | Slide navigation | Scroll snapping: swipe, trackpad, scrollbar, keyboard; pure-CSS arrows & dots | No |
 | Deep links | Every slide has an `id`; `talk.html#that-slide` just works | No |
 | Incremental reveals | `class="reveal"` on a list; items animate in when the slide snaps into view | No |
-| Steps / fragments | `class="step"` or `data-step="k"`; <kbd>→</kbd>/<kbd>Space</kbd> advances within a slide, print/overview expand each step to its own page | Yes¹ |
+| Steps / fragments | `class="step"` or `data-step="k"`, or `class="spotlight"` to highlight one list item at a time; <kbd>→</kbd>/<kbd>Space</kbd> advances within a slide, print/overview expand each step to its own page | Yes¹ |
 | Speaker notes | `<aside class="notes">`, toggled with a checkbox (or press <kbd>S</kbd>) | No |
 | Overview grid | Checkbox toggle (or press <kbd>O</kbd>) re-lays the deck as thumbnails | No |
 | Print / PDF | <kbd>⌘P</kbd> → Save as PDF; one 16:9 page per slide | No |

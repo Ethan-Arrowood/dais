@@ -65,17 +65,20 @@
   };
 
   // --- Steps (fragments) ----------------------------------------------------
-  // A slide is "stepped" when it holds .step / [data-step] elements, or
-  // declares data-dais-steps="N". Right/Space advances one step before moving
-  // to the next section; Left reverses. Each step element has an integer order
-  // (explicit data-step, else its position among the step elements); advancing
-  // toggles .step-active (order <= current) and .step-current (order ==
-  // current), and .step also hides until active (dais.css). Current step lives
-  // on the section as --dais-step / [data-dais-step]; 0 means nothing active.
+  // A slide is "stepped" when it holds .step / [data-step] elements or a
+  // .spotlight group (whose direct children are steps), or declares
+  // data-dais-steps="N". Right/Space advances one step before moving to the
+  // next section; Left reverses. Each step element has an integer order
+  // (explicit data-step, else its DOM position among the step elements, so a
+  // .spotlight group's children number in sequence with any .step around them);
+  // advancing toggles .step-active (order <= current) and .step-current (order
+  // == current). .step also hides until active, and .spotlight dims the
+  // siblings of its current child (dais.css). Current step lives on the section
+  // as --dais-step / [data-dais-step]; 0 means nothing active.
   const stepData = new Map();
 
   const stepItems = (root) =>
-    [...root.querySelectorAll(".step, [data-step]")].map((el, i) => {
+    [...root.querySelectorAll(".step, [data-step], .spotlight > *")].map((el, i) => {
       const explicit = Number(el.dataset.step);
       const order = Number.isFinite(explicit) && explicit > 0 ? explicit : i + 1;
       return { el, order };
@@ -100,7 +103,13 @@
   slides.forEach((section) => {
     const items = stepItems(section);
     const declared = Number(section.dataset.daisSteps);
-    const n = Math.max(declared > 0 ? declared : 0, ...items.map((it) => it.order), 0);
+    const last = Math.max(0, ...items.map((it) => it.order));
+    // A .spotlight holding the slide's last step gets one more step, so the
+    // final press shows the whole list again before the slide advances.
+    const endsOnSpotlight = items.some(
+      ({ el, order }) => order === last && el.parentElement.matches(".spotlight"),
+    );
+    const n = Math.max(declared > 0 ? declared : 0, last + (endsOnSpotlight ? 1 : 0));
     if (n > 0) {
       stepData.set(section, { n, cur: 0, items });
       applyStep(section, 0);

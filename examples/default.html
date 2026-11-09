@@ -133,6 +133,24 @@
       </aside>
     </section>
 
+    <section class="slide" id="spotlight">
+      <h2>Spotlight lists</h2>
+      <p class="muted">The whole list is on screen from the start. Press
+      <kbd>→</kbd> to put each item in the spotlight; the others dim:</p>
+      <ul class="spotlight">
+        <li>Nothing appears or moves</li>
+        <li>The audience keeps the whole list in view</li>
+        <li>One item at a time takes the emphasis</li>
+      </ul>
+      <p class="muted">After the last item, one more press shows the whole list
+      again.</p>
+      <aside class="notes">
+        <code>class="spotlight"</code> on the list makes each child a step, numbered
+        in order, with no <code>data-step</code> needed. Dais adds the final
+        un-dimmed step on its own. Without JS nothing dims.
+      </aside>
+    </section>
+
     <section class="slide divider" id="templates">
       <h2>Slide templates</h2>
       <p>title · divider · quote · media-full</p>
